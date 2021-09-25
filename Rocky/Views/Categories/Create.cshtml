@@ -3,9 +3,12 @@
 <form method="post" asp-action="Create">
 
 	<div class="border p-3">
-
+        @*
+        'ModelOnly' show errors next to the input linked to model props
+        'All' add a summary errors on top of the form
+        *@
         <div asp-validation-summary="ModelOnly" class="text-danger" />
-
+       
 		<div class="form-group row">
 			<h2 class="text-info pl-3">Add Category</h2>
 		</div>
@@ -53,4 +56,11 @@
 	</div>
 
 </form>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
+
 
