@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Rocky.Data;
 using Rocky.Models;
 using System.Collections.Generic;
@@ -84,6 +85,11 @@ namespace Rocky.Controllers
         // GET - UPSERT
         public IActionResult Upsert(int? id)
         {
+            // ViewBags and ViewDatas are used to pass aditional data to Views, usually from Controllers
+            IEnumerable<SelectListItem> CategoryDropDown = _context.Categories.Select(c => new SelectListItem { Text = c.Name, Value = c.Id.ToString() });
+
+            ViewBag.CategoryDropDown = CategoryDropDown;
+
             Product product = null;
             // Create
             if (id == null || id == 0)
