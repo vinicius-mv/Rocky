@@ -18,7 +18,7 @@ namespace Rocky.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Product> products = _context.Products;
+            IEnumerable<Product> products = _context.Products.ToList();
 
             // load related 'Category' to the 'Product' (Manual Eager Loading)
             foreach (var product in products)
@@ -50,34 +50,6 @@ namespace Rocky.Controllers
             return View(category);
         }
 
-        // GET - EDIT
-        public IActionResult Edit(int? id)
-        {
-            if (id == null || id == 0)
-                return NotFound();
-
-            var category = _context.Categories.Find(id);
-            if (category == null)
-                return NotFound();
-
-            return View(category);
-        }
-
-        // POST - EDIT
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(Category category)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Categories.Update(category);
-                _context.SaveChanges();
-
-                return RedirectToAction("Index");
-            }
-            return View(category);
-        }
-
         // GET - DELETE
         public IActionResult Delete(int? id)
         {
@@ -100,13 +72,47 @@ namespace Rocky.Controllers
                 return NotFound();
 
             var category = _context.Categories.Find(id);
-            if(category == null)
+            if (category == null)
                 return NotFound();
 
             _context.Remove(category);
             _context.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+
+        // GET - UPSERT
+        public IActionResult Upsert(int? id)
+        {
+            Product product = null;
+            // Create
+            if (id == null || id == 0)
+            {
+                product = new Product();
+                return View(product);
+            }
+
+            // Update
+            product = _context.Products.Find(id);
+            if (product == null)
+                return NotFound();
+
+            return View(product);
+        }
+
+        // POST - UPSERT
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Upsert(Product product)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Products.Add(product);
+                _context.SaveChanges();
+
+                return RedirectToAction("Index");
+            }
+            return View(product);
         }
     }
 }
