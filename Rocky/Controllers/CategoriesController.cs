@@ -54,5 +54,20 @@ namespace Rocky.Controllers
 
             return View(category);
         }
+
+        // POST - EDIT
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Category category)
+        {
+            if(ModelState.IsValid)
+            {
+                _context.Categories.Update(category);
+                _context.SaveChanges();
+
+                return RedirectToAction("Index");
+            }
+            return View(category);
+        }
     }
 }
