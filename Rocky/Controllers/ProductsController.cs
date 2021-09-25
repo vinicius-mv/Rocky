@@ -85,9 +85,12 @@ namespace Rocky.Controllers
         // GET - UPSERT
         public IActionResult Upsert(int? id)
         {
-            // ViewBags and ViewDatas are used to pass aditional data to Views, usually from Controllers
+            // ViewBag-ViewData: transfer data from Controllers to Views where temporary data is not in a Model, not vice-versa, life cycle = current httpRequest
+            // ViewBag is a dyannmic property and actually is a wrapper around ViewData
+            // ViewData is a dictionary, values must be cast before use
             IEnumerable<SelectListItem> CategoryDropDown = _context.Categories.Select(c => new SelectListItem { Text = c.Name, Value = c.Id.ToString() });
 
+            //ViewData["CategoryDropDown"] = CategoryDropDown;
             ViewBag.CategoryDropDown = CategoryDropDown;
 
             Product product = null;
@@ -113,7 +116,11 @@ namespace Rocky.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Products.Add(product);
+                if(product.Id > 0)
+                    _context.Products.Update(product);
+                else
+                    _context.Products.Add(product);
+
                 _context.SaveChanges();
 
                 return RedirectToAction("Index");
