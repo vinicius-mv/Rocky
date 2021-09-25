@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Rocky.Data;
 using Rocky.Models;
+using Rocky.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -85,47 +86,53 @@ namespace Rocky.Controllers
         // GET - UPSERT
         public IActionResult Upsert(int? id)
         {
-            // ViewBag-ViewData: transfer data from Controllers to Views where temporary data is not in a Model, not vice-versa, life cycle = current httpRequest
+            // ViewBag - ViewData: transfer data from Controllers to Views where temporary data is not in a Model, not vice - versa, life cycle = current httpRequest
             // ViewBag is a dyannmic property and actually is a wrapper around ViewData
             // ViewData is a dictionary, values must be cast before use
-            IEnumerable<SelectListItem> CategoryDropDown = _context.Categories.Select(c => new SelectListItem { Text = c.Name, Value = c.Id.ToString() });
+            // loosely typed view - not ideal
+            // IEnumerable<SelectListItem> CategoryDropDown = _context.Categories.Select(c => new SelectListItem { Text = c.Name, Value = c.Id.ToString() });
+            // ViewData["CategoryDropDown"] = CategoryDropDown;
+            // ViewBag.CategoryDropDown = CategoryDropDown;
 
-            //ViewData["CategoryDropDown"] = CategoryDropDown;
-            ViewBag.CategoryDropDown = CategoryDropDown;
+            // ViewModel(VM): we could achieve the same result, thus we obtain strongly typed Views and Validations with DataAnnotations
 
-            Product product = null;
+            var productVM = new ProductVM()
+            {
+                Product = new Product(),
+                CategorySelectList = _context.Categories.Select(c => new SelectListItem { Text = c.Name, Value = c.Id.ToString() })
+            };
+
             // Create
             if (id == null || id == 0)
             {
-                product = new Product();
-                return View(product);
+                return View(productVM);
             }
 
             // Update
-            product = _context.Products.Find(id);
-            if (product == null)
+            productVM.Product = _context.Products.Find(id);
+            if (productVM.Product == null)
                 return NotFound();
 
-            return View(product);
+            return View(productVM);
         }
 
         // POST - UPSERT
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(Product product)
+        public IActionResult Upsert(ProductVM productVM)
         {
             if (ModelState.IsValid)
             {
-                if(product.Id > 0)
-                    _context.Products.Update(product);
+                if(productVM.Product.Id > 0)
+                    _context.Products.Update(productVM.Product);
                 else
-                    _context.Products.Add(product);
+                    _context.Products.Add(productVM.Product);
 
                 _context.SaveChanges();
 
                 return RedirectToAction("Index");
             }
-            return View(product);
+            return View(productVM);
         }
     }
 }
