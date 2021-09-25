@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Rocky.Controllers
-{
+{   
     public class CategoriesController : Controller
     {
         private ApplicationDbContext _context;
@@ -19,6 +19,22 @@ namespace Rocky.Controllers
         {
             IEnumerable<Category> categories = _context.Categories;
             return View(categories);
+        }
+
+        // GET - CREATE
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST - CREATE
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Category category)
+        {
+            _context.Categories.Add(category);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
         }
     }
 }
