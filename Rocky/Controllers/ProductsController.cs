@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Rocky.Data;
 using Rocky.Models;
 using Rocky.ViewModels;
@@ -134,13 +135,14 @@ namespace Rocky.Controllers
                 if(productVM.Product.Id == 0)
                 { 
                     // Creating
-                    // Copying form image to server
-                    string UploadImagePath = webRootPath + WebConstants.ImagePath;
+                    // set new Image path
+                    string ImagesFolderPath = webRootPath + WebConstants.ImagePath;
                     string fileName = Guid.NewGuid().ToString();
                     string extension = Path.GetExtension(files[0].FileName);
-                    string savePath = Path.Combine(UploadImagePath, fileName + extension);
+                    string newImagePath = Path.Combine(ImagesFolderPath, fileName + extension);
 
-                    using (var fileStream = new FileStream(savePath, FileMode.Create))
+                    // Copying form image to server
+                    using (var fileStream = new FileStream(newImagePath, FileMode.Create))
                     {
                         files[0].CopyTo(fileStream);
                     }
@@ -151,8 +153,38 @@ namespace Rocky.Controllers
                 }
                 else
                 {
-                    //// Updating
-                    //_context.Products.Update(productVM.Product);
+                    // Updating
+                    var productDb = _context.Products.AsNoTracking().FirstOrDefault(x => x.Id == productVM.Product.Id);
+                    if(productDb == null)
+                        return NotFound();
+
+                    if(files.Count > 0)
+                    {
+                        // set new image path
+                        string ImagesFolderPath = webRootPath + WebConstants.ImagePath;
+                        string fileName = Guid.NewGuid().ToString();
+                        string extension = Path.GetExtension(files[0].FileName);
+                        string newImagePath = Path.Combine(ImagesFolderPath, fileName + extension);
+
+                        // remove old file
+                        var oldFile = Path.Combine(ImagesFolderPath, productDb.Image);
+                        if (System.IO.File.Exists(oldFile))
+                        {
+                            System.IO.File.Delete(oldFile);
+                        }
+
+                        // copy new image to server
+                        using (var fileStream = new FileStream(newImagePath, FileMode.Create))
+                        {
+                            files[0].CopyTo(fileStream);
+                        }
+                        productVM.Product.Image = fileName + extension;
+                    }
+                    else // Product updated, but image is not updated -> keep the old image path
+                    {
+                        productVM.Product.Image = productDb.Image;
+                    }
+                    _context.Products.Update(productVM.Product);
                 }
                 _context.SaveChanges();
 
