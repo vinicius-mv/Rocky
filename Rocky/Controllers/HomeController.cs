@@ -34,6 +34,20 @@ namespace Rocky.Controllers
             return View(homeVM);
         }
 
+        public IActionResult Details(int id)
+        {
+            if(id <= 0)
+                return NotFound();
+
+            var detailsVM = new DetailsVM()
+            {
+                Product = _context.Products.Include(x => x.Category).Include(x => x.ApplicationType).FirstOrDefault(x => x.Id == id),
+                ExistsInCart = false
+            };
+
+            return View(detailsVM);
+        }
+
         public IActionResult Privacy()
         {
             return View();
