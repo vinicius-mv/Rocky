@@ -190,6 +190,7 @@ namespace Rocky.Controllers
 
                 return RedirectToAction("Index");
             }
+            productVM.CategorySelectList = _context.Categories.Select(c => new SelectListItem { Text = c.Name, Value = c.Id.ToString() });
             return View(productVM);
         }
     }

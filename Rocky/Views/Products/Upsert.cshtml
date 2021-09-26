@@ -84,7 +84,7 @@
 						<div class="col">
 							@if (Model.Product.Id > 0)
 							{
-								// Update
+							// Update
 								<input type="submit" class="btn btn-info w-100" value="Update" />
 							}
 							else
@@ -102,7 +102,10 @@
 
 			</div>
 			<div class="col-4">
-				<img src="@WebConstants.ImagePath@Model.Product.Image" width="100%" style="border-radius: 10px; border: 1px solid #bbb"/>
+				@if (Model.Product.Id > 0)
+				{
+					<img src="@WebConstants.ImagePath@Model.Product.Image" width="100%" style="border-radius: 10px; border: 1px solid #bbb" />
+				}
 			</div>
 
 		</div>
