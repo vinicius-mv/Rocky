@@ -79,12 +79,24 @@
 				</div>
 
 				<div class="form-group row">
+					<div class="col-4">
+						<label asp-for="Product.ApplicationTypeId"></label>
+					</div>
+					<div class="col-8">
+						<select asp-items=@Model.ApplicationTypeSelectList asp-for=Product.ApplicationTypeId class="form-control">
+							<option disabled selected>-- Select Application Type --</option><
+						</select>
+						<span asp-validation-for="Product.ApplicationTypeId" class="text-danger"></span>
+					</div>
+				</div>
+
+				<div class="form-group row">
 					<div class="col-8 offset-4 row">
 
 						<div class="col">
 							@if (Model.Product.Id > 0)
 							{
-								// Update
+							// Update
 								<input type="submit" class="btn btn-info w-100" value="Update" />
 							}
 							else
@@ -115,7 +127,7 @@
 
 @section Scripts {
     @{
-		<partial name="_ValidationScriptsPartial" />
+	<partial name="_ValidationScriptsPartial" />
     }
 
 <script>

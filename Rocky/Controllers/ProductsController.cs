@@ -32,30 +32,10 @@ namespace Rocky.Controllers
             foreach (var product in products)
             {
                 product.Category = _context.Categories.FirstOrDefault(c => c.Id == product.CategoryId);
+                product.ApplicationType = _context.ApplicationTypes.FirstOrDefault(c => c.Id == product.ApplicationTypeId);
             }
 
             return View(products);
-        }
-
-        // GET - CREATE
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST - CREATE
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(Category category)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Categories.Add(category);
-                _context.SaveChanges();
-
-                return RedirectToAction("Index");
-            }
-            return View(category);
         }
 
         // GET - DELETE
@@ -65,7 +45,7 @@ namespace Rocky.Controllers
                 return NotFound();
 
             // Eager Loading to 'Include' beforehand Category on Product
-            var product = _context.Products.Include(x => x.Category).FirstOrDefault(x => x.Id == id);
+            var product = _context.Products.Include(x => x.Category).Include(x => x.ApplicationType).FirstOrDefault(x => x.Id == id);
             if (product == null)
                 return NotFound();
 
@@ -114,7 +94,8 @@ namespace Rocky.Controllers
             var productVM = new ProductVM()
             {
                 Product = new Product(),
-                CategorySelectList = _context.Categories.Select(c => new SelectListItem { Text = c.Name, Value = c.Id.ToString() })
+                CategorySelectList = _context.Categories.Select(c => new SelectListItem { Text = c.Name, Value = c.Id.ToString() }),
+                ApplicationTypeSelectList = _context.ApplicationTypes.Select(a => new SelectListItem { Text = a.Name, Value = a.Id.ToString() }),
             };
 
             // Create
@@ -200,6 +181,7 @@ namespace Rocky.Controllers
                 return RedirectToAction("Index");
             }
             productVM.CategorySelectList = _context.Categories.Select(c => new SelectListItem { Text = c.Name, Value = c.Id.ToString() });
+            productVM.ApplicationTypeSelectList = _context.ApplicationTypes.Select(a => new SelectListItem { Text = a.Name, Value = a.Id.ToString() });
             return View(productVM);
         }
     }

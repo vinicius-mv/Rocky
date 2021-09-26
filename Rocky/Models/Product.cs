@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Rocky.Models
@@ -24,5 +24,10 @@ namespace Rocky.Models
 
         [ForeignKey("CategoryId")]
         public virtual Category Category { get; set; }
+
+        public int ApplicationTypeId { get; set; }
+
+        [ForeignKey("ApplicationTypeId")]
+        public virtual ApplicationType ApplicationType { get; set; }
     }
 }
