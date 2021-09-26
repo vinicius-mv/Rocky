@@ -6,6 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\lib\tinymce\js\**" />
+    <Content Remove="wwwroot\lib\tinymce\js\**" />
+    <EmbeddedResource Remove="wwwroot\lib\tinymce\js\**" />
+    <None Remove="wwwroot\lib\tinymce\js\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.10">

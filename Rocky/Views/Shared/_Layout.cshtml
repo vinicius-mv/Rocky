@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/fontawesome/css/all.css" />
-    <link rel="stylesheet" href="~/lib/summernote/summernote-bs4.min.css" />
 
+    <script src="~/lib/tinymce/tinymce.min.js"></script>
 </head>
 <body>
     <header>
@@ -54,7 +54,8 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/lib/sweetalert2/sweetalert2@11.js"></script>    
-    <script src="~/lib/summernote/summernote-bs4.min.js"></script>
+    <script src="~/lib/summernote/dist/summernote-bs4.min.js"></script>
+    
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
