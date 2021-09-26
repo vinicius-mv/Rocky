@@ -49,7 +49,7 @@
 						<label asp-for="Product.Description"></label>
 					</div>
 					<div class="col-8">
-						<textarea asp-for="Product.Description" class="form-control summernote"></textarea>
+						<textarea asp-for="Product.Description" class="form-control tinymce"></textarea>
 						<span asp-validation-for="Product.Description" class="text-danger"></span>
 					</div>
 				</div>
@@ -71,7 +71,7 @@
 					<div class="col-8">
 						@*<select asp-for="CategoryId" asp-items="@ViewData["CategoryDropDown"] as IEnumerable<SelectListItem>" class="form-control">*@
 						@*<select asp-for="Product.CategoryId" asp-items="@ViewBag.CategoryDropDown" class="form-control">*@
-						<select asp-items=@Model.CategorySelectList asp-for=Product.CategoryId>
+						<select asp-items=@Model.CategorySelectList asp-for=Product.CategoryId class="form-control">
 							<option disabled selected>-- Select Category --</option><
 						</select>
 						<span asp-validation-for="Product.CategoryId" class="text-danger"></span>
@@ -84,7 +84,7 @@
 						<div class="col">
 							@if (Model.Product.Id > 0)
 							{
-							// Update
+								// Update
 								<input type="submit" class="btn btn-info w-100" value="Update" />
 							}
 							else
@@ -115,16 +115,10 @@
 
 @section Scripts {
     @{
-	<partial name="_ValidationScriptsPartial" />
+		<partial name="_ValidationScriptsPartial" />
     }
 
 <script>
-
-	$(document).ready(function() {
-			$('.summernote').summernote({
-				height: 250
-			});
-	});
 
 	function validateImageInput(){
 		if(document.getElementById("uploadBox").value == ""){
@@ -138,6 +132,11 @@
 			return true;
 		}
 	}
+
+	// TinyMce Initializer
+	tinymce.init({
+		selector: '.tinymce'
+	});
 
 </script>
 }

@@ -64,26 +64,35 @@ namespace Rocky.Controllers
             if (id == null || id == 0)
                 return NotFound();
 
-            var category = _context.Categories.Find(id);
-            if (category == null)
+            // Eager Loading to 'Include' beforehand Category on Product
+            var product = _context.Products.Include(x => x.Category).FirstOrDefault(x => x.Id == id);
+            if (product == null)
                 return NotFound();
 
-            return View(category);
+            return View(product);
         }
 
         // POST - DELETE
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
         {
             if (id == null || id == 0)
                 return NotFound();
 
-            var category = _context.Categories.Find(id);
-            if (category == null)
+            var product = _context.Products.Find(id);
+            if (product == null)
                 return NotFound();
 
-            _context.Remove(category);
+            // Set image path
+            string ImagesFolderPath = _webHostEnviroment.WebRootPath + WebConstants.ImagePath;
+            string oldImagePath = Path.Combine(ImagesFolderPath, product.Image);
+
+            // Delete Image from server
+            if (System.IO.File.Exists(oldImagePath))
+                System.IO.File.Delete(oldImagePath);
+
+            _context.Products.Remove(product);
             _context.SaveChanges();
 
             return RedirectToAction("Index");
@@ -132,8 +141,8 @@ namespace Rocky.Controllers
                 var files = HttpContext.Request.Form.Files;
                 string webRootPath = _webHostEnviroment.WebRootPath;
 
-                if(productVM.Product.Id == 0)
-                { 
+                if (productVM.Product.Id == 0)
+                {
                     // Creating
                     // set new Image path
                     string ImagesFolderPath = webRootPath + WebConstants.ImagePath;
@@ -147,7 +156,7 @@ namespace Rocky.Controllers
                         files[0].CopyTo(fileStream);
                     }
 
-                    productVM.Product.Image = fileName+extension;
+                    productVM.Product.Image = fileName + extension;
 
                     _context.Products.Add(productVM.Product);
                 }
@@ -155,10 +164,10 @@ namespace Rocky.Controllers
                 {
                     // Updating
                     var productDb = _context.Products.AsNoTracking().FirstOrDefault(x => x.Id == productVM.Product.Id);
-                    if(productDb == null)
+                    if (productDb == null)
                         return NotFound();
 
-                    if(files.Count > 0)
+                    if (files.Count > 0)
                     {
                         // set new image path
                         string ImagesFolderPath = webRootPath + WebConstants.ImagePath;
@@ -167,7 +176,7 @@ namespace Rocky.Controllers
                         string newImagePath = Path.Combine(ImagesFolderPath, fileName + extension);
 
                         // remove old file
-                        var oldFile = Path.Combine(ImagesFolderPath, productDb.Image);
+                        var oldFile = Path.Combine(ImagesFolderPath, productDb?.Image);
                         if (System.IO.File.Exists(oldFile))
                         {
                             System.IO.File.Delete(oldFile);
