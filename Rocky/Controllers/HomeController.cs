@@ -36,18 +36,31 @@ namespace Rocky.Controllers
             return View(homeVM);
         }
 
-        public IActionResult Details(int id)
+        public IActionResult Details(int productId)
         {
-            if (id <= 0)
+            if (productId <= 0)
                 return NotFound();
+
+            // check if there is any Product on the Session Store
+            var shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.SessionCart) ?? new List<ShoppingCart>();
 
             var detailsVM = new DetailsVM()
             {
-                Product = _context.Products.Include(x => x.Category).Include(x => x.ApplicationType).FirstOrDefault(x => x.Id == id),
-                ExistsInCart = false
+                Product = _context.Products.Include(x => x.Category).Include(x => x.ApplicationType).FirstOrDefault(x => x.Id == productId),
+                ExistsInCart = ShoppingCartContains(productId, shoppingCartList)
             };
 
             return View(detailsVM);
+        }
+
+        private static bool ShoppingCartContains(int productId, IList<ShoppingCart> shoppingCartList)
+        {
+            foreach (var shoppingCartItem in shoppingCartList)
+            {
+                if (shoppingCartItem.ProductId == productId)
+                    return true;
+            }
+            return false;
         }
 
         [HttpPost]
