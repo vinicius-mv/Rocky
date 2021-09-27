@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Rocky.Data;
 using Rocky.Models;
+using Rocky.Utility;
 using Rocky.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -36,7 +38,7 @@ namespace Rocky.Controllers
 
         public IActionResult Details(int id)
         {
-            if(id <= 0)
+            if (id <= 0)
                 return NotFound();
 
             var detailsVM = new DetailsVM()
@@ -46,6 +48,21 @@ namespace Rocky.Controllers
             };
 
             return View(detailsVM);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DetailsPost(int id)
+        {
+            // check if there is any Product on the Session Store
+            var shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.SessionCart) ?? new List<ShoppingCart>();
+
+            shoppingCartList.Add(new ShoppingCart { ProductId = id });
+
+            // Update the Session Store
+            HttpContext.Session.Set(WebConstants.SessionCart, shoppingCartList);
+
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Privacy()
