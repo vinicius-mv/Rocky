@@ -36,9 +36,9 @@ namespace Rocky.Controllers
             return View(homeVM);
         }
 
-        public IActionResult Details(int productId)
+        public IActionResult Details(int id)
         {
-            if (productId <= 0)
+            if (id <= 0)
                 return NotFound();
 
             // check if there is any Product on the Session Store
@@ -46,8 +46,8 @@ namespace Rocky.Controllers
 
             var detailsVM = new DetailsVM()
             {
-                Product = _context.Products.Include(x => x.Category).Include(x => x.ApplicationType).FirstOrDefault(x => x.Id == productId),
-                ExistsInCart = ShoppingCartContains(productId, shoppingCartList)
+                Product = _context.Products.Include(x => x.Category).Include(x => x.ApplicationType).FirstOrDefault(x => x.Id == id),
+                ExistsInCart = ShoppingCartContains(productId: id, shoppingCartList)
             };
 
             return View(detailsVM);
@@ -75,6 +75,23 @@ namespace Rocky.Controllers
             // Update the Session Store
             HttpContext.Session.Set(WebConstants.SessionCart, shoppingCartList);
 
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult RemoveFromCart(int id)
+        {
+            // check if there is any Product on the Session Store
+            var shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.SessionCart) ?? new List<ShoppingCart>();
+
+            var itemToRemove = shoppingCartList.SingleOrDefault(x => x.ProductId == id);
+            if(itemToRemove != null)
+            {
+                shoppingCartList.Remove(itemToRemove);
+            }
+
+            // Update the Session Store
+            HttpContext.Session.Set(WebConstants.SessionCart, shoppingCartList);
+            
             return RedirectToAction(nameof(Index));
         }
 
