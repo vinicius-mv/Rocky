@@ -78,6 +78,7 @@ namespace Rocky
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapRazorPages(); // Add route to RazorPages - Scaffolded Identity Razor Pages 
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
