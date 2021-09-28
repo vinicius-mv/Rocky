@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -30,6 +31,10 @@ namespace Rocky
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            // Identity Config
+            services.AddDefaultIdentity<IdentityUser>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
             // Sessions config
             services.AddHttpContextAccessor();
@@ -63,6 +68,9 @@ namespace Rocky
             app.ConfigureLocalizationMiddleware();
 
             app.UseRouting();
+
+            // identity settings
+            app.UseAuthentication(); 
 
             app.UseAuthorization();
 
