@@ -33,7 +33,9 @@ namespace Rocky
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             // Identity Config
-            services.AddDefaultIdentity<IdentityUser>()
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddDefaultTokenProviders()
+                .AddDefaultUI()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             // Sessions config
