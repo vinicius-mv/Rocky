@@ -72,6 +72,7 @@ namespace Rocky.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
+            // Create Default Roles if there is no roles on Database
             if (!await _roleManager.RoleExistsAsync(WebConstants.AdminRole))
             {
                 await _roleManager.CreateAsync(new IdentityRole(WebConstants.AdminRole));
@@ -89,11 +90,21 @@ namespace Rocky.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, FullName = Input.FullName, PhoneNumber = Input.PhoneNumber };
+
+                bool createUserAsAdmin = false;
+                // Give Admin Role to the First User Registered
+                if (!_userManager.Users.Any())
+                    createUserAsAdmin = true;
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, WebConstants.AdminRole); // add admin role to the current user
-
+                    // Verify if a Admin is creating an User, if so, Set new User as Admin)
+                    if (createUserAsAdmin || User.IsInRole(WebConstants.AdminRole))
+                        await _userManager.AddToRoleAsync(user, WebConstants.AdminRole);
+                    else
+                        await _userManager.AddToRoleAsync(user, WebConstants.CustomerRole);
+                    
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
