@@ -56,6 +56,7 @@ namespace Rocky.Controllers
             ProductUserVM = new ProductUserVM()
             {
                 ApplicationUser = _context.ApplicationUsers.FirstOrDefault(x => x.Id == claimUserId.Value),
+                ProductList = prodList
             };
 
             return View(ProductUserVM);
