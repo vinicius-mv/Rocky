@@ -2,12 +2,15 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocky.Data;
+using Rocky.Services;
+using Rocky.Settings;
 using Rocky.Utility;
 using System;
 using System.Collections.Generic;
@@ -31,6 +34,11 @@ namespace Rocky
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            // MailService
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+            services.AddTransient<Services.IEmailService, Services.EmailService>();
+            services.AddTransient<IEmailSender, Services.EmailService>(); // Identity Default Pages(Scaffolded) use this Interface
 
             // Identity Config
             services.AddIdentity<IdentityUser, IdentityRole>()

@@ -5,6 +5,7 @@
 
 ### Application Uploaded Image files ###
 **/images/product/*.*
+appsettings.json
 
 # User-specific files
 *.rsuser
