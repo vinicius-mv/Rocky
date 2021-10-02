@@ -91,16 +91,16 @@ namespace Rocky.Areas.Identity.Pages.Account
             {
                 var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email, FullName = Input.FullName, PhoneNumber = Input.PhoneNumber };
 
-                bool createUserAsAdmin = false;
+                bool createAdminUser = false;
                 // Give Admin Role to the First User Registered
                 if (!_userManager.Users.Any())
-                    createUserAsAdmin = true;
+                    createAdminUser = true;
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     // Verify if a Admin is creating an User, if so, Set new User as Admin)
-                    if (createUserAsAdmin || User.IsInRole(WebConstants.AdminRole))
+                    if (createAdminUser || User.IsInRole(WebConstants.AdminRole))
                         await _userManager.AddToRoleAsync(user, WebConstants.AdminRole);
 
                     await _userManager.AddToRoleAsync(user, WebConstants.CustomerRole);
@@ -124,7 +124,12 @@ namespace Rocky.Areas.Identity.Pages.Account
                     }
                     else
                     {
+                        // Admin Users when creating a new user will stay logged in and wont Authenticate
+                        if(User.Identity.IsAuthenticated)
+
+                        // If Not Authenticated - Log In and Authenticate with the created Acc
                         await _signInManager.SignInAsync(user, isPersistent: false);
+
                         return LocalRedirect(returnUrl);
                     }
                 }
