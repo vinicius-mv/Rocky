@@ -1,4 +1,6 @@
-﻿@model Rocky.ViewModels.DetailsVM
+﻿@using Rocky.Utility 
+
+@model Rocky.ViewModels.DetailsVM
 
 <div class="">
 	<form method="post" asp-action="DetailsPost" asp-route-id="@Model.Product.Id">

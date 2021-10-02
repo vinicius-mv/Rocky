@@ -1,16 +1,12 @@
 ﻿using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using Rocky.Models;
 using System.IO;
 using System.Threading.Tasks;
-using MailKit.Net.Smtp;
-using Rocky.Settings;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.Extensions.Configuration;
 
 // REF: https://www.c-sharpcorner.com/article/send-email-using-asp-net-core-5-web-api/
-namespace Rocky.Services
+namespace Rocky.Utility.EmailPackage
 {
     public class EmailService : IEmailService, IEmailSender
     {
@@ -55,7 +51,7 @@ namespace Rocky.Services
             }
             builder.HtmlBody = mailRequest.Body;
             email.Body = builder.ToMessageBody();
-            using var smtp = new SmtpClient();
+            using var smtp = new MailKit.Net.Smtp.SmtpClient();
             smtp.Connect(_emailSettings.Host, _emailSettings.Port, SecureSocketOptions.StartTls);
             smtp.Authenticate(_emailSettings.Mail, _emailSettings.Password);
             await smtp.SendAsync(email);

@@ -1,8 +1,8 @@
 using System;
 
-namespace Rocky.Models
+namespace Rocky.ViewModels
 {
-    public class ErrorViewModel
+    public class ErrorVM
     {
         public string RequestId { get; set; }
 

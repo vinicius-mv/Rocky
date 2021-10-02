@@ -1,4 +1,5 @@
-﻿@model Rocky.Models.Product;
+﻿@using Rocky.Utility
+@model Rocky.Models.Product;
 
 <form method="post" asp-action="Delete">
 
@@ -71,7 +72,7 @@
 
 			</div>
 			<div class="col-4">
-					<img src="@WebConstants.ImagePath@Model.Image" width="100%" style="border-radius: 10px; border: 1px solid #bbb" />
+					<img src="@WebConstants.ImagePath@Model.Image" style="border-radius: 10px; border: 1px solid #bbb; width: 100%" />
 			</div>
 
 		</div>
