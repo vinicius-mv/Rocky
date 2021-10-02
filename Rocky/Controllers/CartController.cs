@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace Rocky.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = WebConstants.CustomerRole)]
     public class CartController : Controller
     {
         private readonly ApplicationDbContext _context;
