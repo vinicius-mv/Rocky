@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Rocky.Data;
+using Rocky.DataAccess;
 using Rocky.Models;
 using Rocky.Utility;
 using Rocky.ViewModels;

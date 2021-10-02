@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Rocky.Migrations
+namespace Rocky.DataAccess.Migrations
 {
     public partial class AddRequiredFields : Migration
     {
