@@ -14,11 +14,11 @@ namespace Rocky.Services
 {
     public class EmailService : IEmailService, IEmailSender
     {
-        private readonly EmailSettings _mailSettings;
+        private readonly EmailSettings _emailSettings;
 
         public EmailService(IOptions<EmailSettings> mailSettings)
         {
-            _mailSettings = mailSettings.Value;
+            _emailSettings = mailSettings.Value;
         }
 
         // another way to read EmailSettings from app.settings.json
@@ -33,7 +33,7 @@ namespace Rocky.Services
         public async Task SendEmailAsync(MailRequest mailRequest)
         {
             var email = new MimeMessage();
-            email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
+            email.Sender = MailboxAddress.Parse(_emailSettings.Mail);
             email.To.Add(MailboxAddress.Parse(mailRequest.ToEmail));
             email.Subject = mailRequest.Subject;
             var builder = new BodyBuilder();
@@ -56,14 +56,17 @@ namespace Rocky.Services
             builder.HtmlBody = mailRequest.Body;
             email.Body = builder.ToMessageBody();
             using var smtp = new SmtpClient();
-            smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
-            smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
+            smtp.Connect(_emailSettings.Host, _emailSettings.Port, SecureSocketOptions.StartTls);
+            smtp.Authenticate(_emailSettings.Mail, _emailSettings.Password);
             await smtp.SendAsync(email);
             smtp.Disconnect(true);
         }
 
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
+            if(email == WebConstants.EmailAdmin)
+                email = _emailSettings.Mail;
+
             var mailRequest = new MailRequest { ToEmail = email, Subject = subject, Body = htmlMessage };
             await SendEmailAsync(mailRequest);
         }
