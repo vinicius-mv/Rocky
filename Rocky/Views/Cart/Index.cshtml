@@ -1,7 +1,7 @@
 ﻿@using Rocky.Utility
-@model IEnumerable<Product> 
+@model IEnumerable<Product>
 
-@if(Model.Count() <= 0)
+@if (Model.Count() <= 0)
 {
     <p>Cart is empty.</p>
 }
@@ -13,13 +13,16 @@ else
             <div class="container row">
                 <div class="col -8">
                     <div class="card mt-4">
-                        <div class="card-header bg-dark text-light ml-0 row container">
-                            <div class="col-6">
-                                <i class="fa fa-shopping-cart"></i> &nbsp;
-                                Shopping Cart
-                            </div>
-                            <div class="col-6 text-right">
-                                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-info btn-sm">Continue Shopping</a>
+                        <div class="card-header bg-dark text-light ml-0">
+                            <div class="row">
+
+                                <div class="col-6">
+                                    <i class="fa fa-shopping-cart"></i> &nbsp;
+                                    Shopping Cart
+                                </div>
+                                <div class="col-6 text-right float-end">
+                                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-info btn-sm float-end">Continue Shopping</a>
+                                </div>
                             </div>
                         </div>
                         <div class="card-body">
@@ -39,28 +42,28 @@ else
                             </div>
 
                             <hr />
-                            @foreach(var product in Model)
+                            @foreach (var product in Model)
                             {
 
-                            <div class="row h-100">
-                                <div class="col-4 col-md-2 text-center py-2">
-                                    <img src="@WebConstants.ImagePath@product.Image" class="rounded" style="max-height: 100px; width: 100%" />
-                                </div>
-                                <div class="col-8 col-lg-7">
-                                    <h5>@product.Name</h5>
-                                    <div style="font-size:11px;">@product.ShortDescription</div>
-                                </div>
-                                <div class="col-3 col-lg-2 pt-lg-4" style="font-size:11px;">
-                                    <span style="font-size:17px;"> $@product.Price</span>/ sqft
+                                <div class="row h-100">
+                                    <div class="col-4 col-md-2 text-center py-2">
+                                        <img src="@WebConstants.ImagePath@product.Image" class="rounded" style="max-height: 100px; width: 100%" />
+                                    </div>
+                                    <div class="col-8 col-lg-7">
+                                        <h5>@product.Name</h5>
+                                        <div style="font-size:11px;">@product.ShortDescription</div>
+                                    </div>
+                                    <div class="col-3 col-lg-2 pt-lg-4" style="font-size:11px;">
+                                        <span style="font-size:17px;"> $@product.Price</span>/ sqft
 
+                                    </div>
+                                    <div class="col-2 col-lg-1 p-0 pt-lg-4 text-center">
+                                        <a asp-action="Remove" asp-route-id="@product.Id" class="btn btn-outline-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
                                 </div>
-                                <div class="col-2 col-lg-1 p-0 pt-lg-4 text-center">
-                                    <a asp-action="Remove" asp-route-id="@product.Id" class="btn btn-outline-danger">
-                                        <i  class="fas fa-trash"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            <hr />
+                                <hr />
                             }
                         </div>
                         <div class="card-footer">
