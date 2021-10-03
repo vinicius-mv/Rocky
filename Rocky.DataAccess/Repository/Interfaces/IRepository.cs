@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rocky.DataAccess.Repository
+namespace Rocky.DataAccess.Repository.Interfaces
 {
     public interface IRepository<T> where T : class
     {

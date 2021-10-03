@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Rocky.DataAccess.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

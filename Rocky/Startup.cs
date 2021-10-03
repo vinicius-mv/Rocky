@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocky.DataAccess;
+using Rocky.DataAccess.Repository;
+using Rocky.DataAccess.Repository.Interfaces;
 using Rocky.Utility;
 using Rocky.Utility.EmailPackage;
 using System;
@@ -27,6 +29,11 @@ namespace Rocky
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            // Repositories
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IApplicationTypeRepository, ApplicationTypeRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
 
             // MailService
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Rocky.DataAccess;
+using Rocky.DataAccess.Repository.Interfaces;
 using Rocky.Models;
 using Rocky.Utility;
 using Rocky.ViewModels;
@@ -17,18 +18,21 @@ namespace Rocky.Controllers
     [Authorize(Roles = WebConstants.AdminRole)]
     public class ProductsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IProductRepository _productRepo;
         private readonly IWebHostEnvironment _webHostEnviroment;
 
-        public ProductsController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+        public ProductsController(IProductRepository productRepo, IWebHostEnvironment webHostEnvironment)
         {
-            _context = context;
+            _productRepo = productRepo;
             _webHostEnviroment = webHostEnvironment;
         }
 
         public IActionResult Index()
         {
-            IEnumerable<Product> products = _context.Products.Include(x => x.Category).Include(x => x.ApplicationType);
+            //IEnumerable<Product> products = _context.Products.Include(x => x.Category).Include(x => x.ApplicationType);
+
+            string navPropsNames = $"{nameof(Product.Category)},{nameof(Product.ApplicationType)}";
+            IEnumerable<Product> products = _productRepo.GetAll(includeProperties: navPropsNames, isTracking: false);
 
             // load related 'Category' to the 'Product' (Manual Eager Loading)
             //foreach (var product in products)
@@ -37,7 +41,7 @@ namespace Rocky.Controllers
             //    product.ApplicationType = _context.ApplicationTypes.FirstOrDefault(c => c.Id == product.ApplicationTypeId);
             //}
 
-            return View(products);
+            return View(products.ToList());
         }
 
         // GET - DELETE
@@ -47,7 +51,8 @@ namespace Rocky.Controllers
                 return NotFound();
 
             // Eager Loading to 'Include' beforehand Category on Product
-            var product = _context.Products.Include(x => x.Category).Include(x => x.ApplicationType).FirstOrDefault(x => x.Id == id);
+            string navPropsName = $"{nameof(Product.Category)},{nameof(Product.ApplicationType)}";
+            Product product = _productRepo.FirstOrDefault(includeProperties: navPropsName);
             if (product == null)
                 return NotFound();
 
@@ -62,7 +67,7 @@ namespace Rocky.Controllers
             if (id == null || id == 0)
                 return NotFound();
 
-            var product = _context.Products.Find(id);
+            var product = _productRepo.Find(id.Value);
             if (product == null)
                 return NotFound();
 
@@ -74,10 +79,10 @@ namespace Rocky.Controllers
             if (System.IO.File.Exists(oldImagePath))
                 System.IO.File.Delete(oldImagePath);
 
-            _context.Products.Remove(product);
-            _context.SaveChanges();
+            _productRepo.Remove(product);
+            _productRepo.Save();
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         // GET - UPSERT
@@ -96,18 +101,16 @@ namespace Rocky.Controllers
             var productVM = new ProductVM()
             {
                 Product = new Product(),
-                CategorySelectList = _context.Categories.Select(c => new SelectListItem { Text = c.Name, Value = c.Id.ToString() }),
-                ApplicationTypeSelectList = _context.ApplicationTypes.Select(a => new SelectListItem { Text = a.Name, Value = a.Id.ToString() }),
+                CategorySelectList = _productRepo.GetAllCategoriesDropDownList(),
+                ApplicationTypeSelectList = _productRepo.GetAllApplicationTypesDropDownList()
             };
 
             // Create
             if (id == null || id == 0)
-            {
                 return View(productVM);
-            }
 
             // Update
-            productVM.Product = _context.Products.Find(id);
+            productVM.Product = _productRepo.Find(id.Value);
             if (productVM.Product == null)
                 return NotFound();
 
@@ -141,12 +144,12 @@ namespace Rocky.Controllers
 
                     productVM.Product.Image = fileName + extension;
 
-                    _context.Products.Add(productVM.Product);
+                    _productRepo.Add(productVM.Product);
                 }
                 else
                 {
                     // Updating
-                    var productDb = _context.Products.AsNoTracking().FirstOrDefault(x => x.Id == productVM.Product.Id);
+                    var productDb = _productRepo.FirstOrDefault(filter: x => x.Id == productVM.Product.Id, isTracking: false);
                     if (productDb == null)
                         return NotFound();
 
@@ -176,14 +179,15 @@ namespace Rocky.Controllers
                     {
                         productVM.Product.Image = productDb.Image;
                     }
-                    _context.Products.Update(productVM.Product);
+                    _productRepo.Update(productVM.Product);
                 }
-                _context.SaveChanges();
+                _productRepo.Save();
 
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
-            productVM.CategorySelectList = _context.Categories.Select(c => new SelectListItem { Text = c.Name, Value = c.Id.ToString() });
-            productVM.ApplicationTypeSelectList = _context.ApplicationTypes.Select(a => new SelectListItem { Text = a.Name, Value = a.Id.ToString() });
+            productVM.CategorySelectList = _productRepo.GetAllCategoriesDropDownList();
+            productVM.ApplicationTypeSelectList = _productRepo.GetAllApplicationTypesDropDownList();
+
             return View(productVM);
         }
     }

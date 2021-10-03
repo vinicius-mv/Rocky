@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rocky.DataAccess;
+using Rocky.DataAccess.Repository.Interfaces;
 using Rocky.Models;
 using Rocky.Utility;
 using System.Collections.Generic;
@@ -10,16 +11,16 @@ namespace Rocky.Controllers
     [Authorize(Roles = WebConstants.AdminRole)]
     public class ApplicationTypesController : Controller
     {
-        private ApplicationDbContext _context;
+        private IApplicationTypeRepository _appTypeRepo;
 
-        public ApplicationTypesController(ApplicationDbContext context)
+        public ApplicationTypesController(IApplicationTypeRepository appTypeRepo)
         {
-            _context = context;
+            _appTypeRepo = appTypeRepo;
         }
 
         public IActionResult Index()
         {
-            IEnumerable<ApplicationType> appTypes = _context.ApplicationTypes;
+            IEnumerable<ApplicationType> appTypes = _appTypeRepo.GetAll();
 
             return View(appTypes);
         }
@@ -35,10 +36,10 @@ namespace Rocky.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(ApplicationType appType)
         {
-            _context.ApplicationTypes.Add(appType);
-            _context.SaveChanges();
+            _appTypeRepo.Add(appType);
+            _appTypeRepo.Save();
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         // GET - EDIT
@@ -47,7 +48,7 @@ namespace Rocky.Controllers
             if(id == null || id == 0)
                 return NotFound();
 
-            var appType = _context.ApplicationTypes.Find(id);
+            var appType = _appTypeRepo.Find(id.Value);
             if(appType == null)
                 return NotFound();
 
@@ -61,10 +62,10 @@ namespace Rocky.Controllers
         {
             if(ModelState.IsValid)
             {
-                _context.ApplicationTypes.Update(appType);
-                _context.SaveChanges();
+                _appTypeRepo.Update(appType);
+                _appTypeRepo.Save();
 
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             return View(appType);
         }
@@ -75,7 +76,7 @@ namespace Rocky.Controllers
             if(id == null || id == 0)
                 return NotFound();
 
-            var appType = _context.ApplicationTypes.Find(id);
+            var appType = _appTypeRepo.Find(id.Value);
             if(appType == null)
                 return NotFound();
 
@@ -90,14 +91,14 @@ namespace Rocky.Controllers
             if(id == null || id == 0)
                 return NotFound();
 
-            var appType = _context.ApplicationTypes.Find(id);
+            var appType = _appTypeRepo.Find(id.Value);
             if(appType == null)
                 return NotFound();
 
-            _context.Remove(appType);
-            _context.SaveChanges();
+            _appTypeRepo.Remove(appType);
+            _appTypeRepo.Save();
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
     }
 }

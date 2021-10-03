@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rocky.DataAccess;
+using Rocky.DataAccess.Repository.Interfaces;
 using Rocky.Models;
 using Rocky.Utility;
 using System.Collections.Generic;
@@ -10,16 +11,16 @@ namespace Rocky.Controllers
     [Authorize(Roles = WebConstants.AdminRole)]
     public class CategoriesController : Controller
     {
-        private ApplicationDbContext _context;
+        private ICategoryRepository _catRepo;
 
-        public CategoriesController(ApplicationDbContext context)
+        public CategoriesController(ICategoryRepository categoryRepo)
         {
-            _context = context;
+            _catRepo = categoryRepo;
         }
 
         public IActionResult Index()
         {
-            IEnumerable<Category> categories = _context.Categories;
+            IEnumerable<Category> categories = _catRepo.GetAll();
             return View(categories);
         }
 
@@ -36,10 +37,10 @@ namespace Rocky.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Categories.Add(category);
-                _context.SaveChanges();
+                _catRepo.Add(category);
+                _catRepo.Save();
 
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             return View(category);
         }
@@ -50,7 +51,7 @@ namespace Rocky.Controllers
             if (id == null || id == 0)
                 return NotFound();
 
-            var category = _context.Categories.Find(id);
+            var category = _catRepo.Find(id.Value);
             if (category == null)
                 return NotFound();
 
@@ -64,10 +65,10 @@ namespace Rocky.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Categories.Update(category);
-                _context.SaveChanges();
+                _catRepo.Update(category);
+                _catRepo.Save();
 
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             return View(category);
         }
@@ -78,7 +79,7 @@ namespace Rocky.Controllers
             if (id == null || id == 0)
                 return NotFound();
 
-            var category = _context.Categories.Find(id);
+            var category = _catRepo.Find(id.Value);
             if (category == null)
                 return NotFound();
 
@@ -93,14 +94,14 @@ namespace Rocky.Controllers
             if (id == null || id == 0)
                 return NotFound();
 
-            var category = _context.Categories.Find(id);
+            var category = _catRepo.Find(id.Value);
             if(category == null)
                 return NotFound();
 
-            _context.Remove(category);
-            _context.SaveChanges();
+            _catRepo.Remove(category);
+            _catRepo.Save();
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
     }
 }
