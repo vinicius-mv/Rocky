@@ -66,6 +66,20 @@ namespace Rocky.Controllers
             return RedirectToAction(nameof(CartController.Index), "Cart");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete()
+        {
+            InquiryHeader inquiryHeader = _inquiryHeaderRepo.FirstOrDefault(x => x.Id == InquiryVM.InquiryHeader.Id);
+            IEnumerable<InquiryDetail> inquiryDetails = _inquiryDetailRepo.GetAll(x => x.InquiryHeaderId == this.InquiryVM.InquiryHeader.Id);
+
+            _inquiryDetailRepo.RemoveRange(inquiryDetails);
+            _inquiryHeaderRepo.Remove(inquiryHeader);
+            _inquiryHeaderRepo.Save(); // Save all changes on DbContext
+
+            return RedirectToAction(nameof(Index));
+        }
+
         #region API Calls
 
         [HttpGet]
