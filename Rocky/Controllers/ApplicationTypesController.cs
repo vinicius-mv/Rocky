@@ -39,17 +39,18 @@ namespace Rocky.Controllers
             _appTypeRepo.Add(appType);
             _appTypeRepo.Save();
 
+            TempData[WebConstants.Notifications.Success] = "Action Completed Successfully";
             return RedirectToAction(nameof(Index));
         }
 
         // GET - EDIT
         public IActionResult Edit(int? id)
         {
-            if(id == null || id == 0)
+            if (id == null || id == 0)
                 return NotFound();
 
             var appType = _appTypeRepo.Find(id.Value);
-            if(appType == null)
+            if (appType == null)
                 return NotFound();
 
             return View(appType);
@@ -60,24 +61,27 @@ namespace Rocky.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(ApplicationType appType)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _appTypeRepo.Update(appType);
                 _appTypeRepo.Save();
+                TempData[WebConstants.Notifications.Success] = "Action Completed Successfully";
 
                 return RedirectToAction(nameof(Index));
             }
+            TempData[WebConstants.Notifications.Error] = "Action Failed";
+
             return View(appType);
         }
 
         // GET - DELETE
         public IActionResult Delete(int? id)
         {
-            if(id == null || id == 0)
+            if (id == null || id == 0)
                 return NotFound();
 
             var appType = _appTypeRepo.Find(id.Value);
-            if(appType == null)
+            if (appType == null)
                 return NotFound();
 
             return View(appType);
@@ -88,15 +92,22 @@ namespace Rocky.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
         {
-            if(id == null || id == 0)
+            if (id == null || id == 0)
+            {
+                TempData[WebConstants.Notifications.Error] = "Action Failed";
                 return NotFound();
+            }
 
             var appType = _appTypeRepo.Find(id.Value);
-            if(appType == null)
+            if (appType == null)
+            {
+                TempData[WebConstants.Notifications.Error] = "Action Failed";
                 return NotFound();
+            }
 
             _appTypeRepo.Remove(appType);
             _appTypeRepo.Save();
+            TempData[WebConstants.Notifications.Success] = "Action Completed Successfully";
 
             return RedirectToAction(nameof(Index));
         }

@@ -63,6 +63,8 @@ namespace Rocky.Controllers
             HttpContext.Session.Set<IList<ShoppingCart>>(WebConstants.Sessions.ShoppingCartList, shoppingCartList);
             HttpContext.Session.Set<int>(WebConstants.Sessions.InquiryHeaderId, this.InquiryVM.InquiryHeader.Id);
 
+            TempData[WebConstants.Notifications.Success] = "Action Completed Successfully";
+
             return RedirectToAction(nameof(CartController.Index), "Cart");
         }
 
@@ -76,6 +78,8 @@ namespace Rocky.Controllers
             _inquiryDetailRepo.RemoveRange(inquiryDetails);
             _inquiryHeaderRepo.Remove(inquiryHeader);
             _inquiryHeaderRepo.Save(); // Save all changes on DbContext
+
+            TempData[WebConstants.Notifications.Success] = "Action Completed Successfully";
 
             return RedirectToAction(nameof(Index));
         }

@@ -141,6 +141,8 @@ namespace Rocky.Controllers
             }
             _inquiryDetailRepo.Save();
 
+            TempData[WebConstants.Notifications.Success] = "Action Completed Successfully";
+
             return RedirectToAction(nameof(InquiryConfirmation));
         }
 
@@ -162,6 +164,8 @@ namespace Rocky.Controllers
 
             // Update Session Store 
             HttpContext.Session.Set<IList<ShoppingCart>>(WebConstants.Sessions.ShoppingCartList, shoppingCartList);
+
+            TempData[WebConstants.Notifications.Success] = "Action Completed Successfully";
 
             return RedirectToAction(nameof(Index));
         }

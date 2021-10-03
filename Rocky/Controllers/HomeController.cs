@@ -83,6 +83,8 @@ namespace Rocky.Controllers
             // Update the Session Store
             HttpContext.Session.Set(WebConstants.Sessions.ShoppingCartList, shoppingCartList);
 
+            TempData[WebConstants.Notifications.Success] = "Action Completed Successfully";
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -99,6 +101,8 @@ namespace Rocky.Controllers
 
             // Update the Session Store
             HttpContext.Session.Set(WebConstants.Sessions.ShoppingCartList, shoppingCartList);
+
+            TempData[WebConstants.Notifications.Success] = "Action Completed Successfully";
 
             return RedirectToAction(nameof(Index));
         }

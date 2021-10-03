@@ -82,6 +82,8 @@ namespace Rocky.Controllers
             _productRepo.Remove(product);
             _productRepo.Save();
 
+            TempData[WebConstants.Notifications.Success] = "Action Completed Successfully";
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -182,6 +184,8 @@ namespace Rocky.Controllers
                     _productRepo.Update(productVM.Product);
                 }
                 _productRepo.Save();
+
+                TempData[WebConstants.Notifications.Success] = "Action Completed Successfully";
 
                 return RedirectToAction(nameof(Index));
             }
