@@ -16,6 +16,7 @@ namespace Rocky.Controllers
 
         private readonly IInquiryDetailRepository _inquiryDetailRepo;
 
+        [BindProperty]
         public InquiryVM InquiryVM { get; set; }
 
         public InquiryController(IInquiryHeaderRepository inquiryHeaderRepo, IInquiryDetailRepository inquiryDetailRepo)
@@ -39,6 +40,30 @@ namespace Rocky.Controllers
             };
 
             return View(InquiryVM);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DetailsPost()
+        {
+            this.InquiryVM.InquiryDetails = _inquiryDetailRepo.GetAll(x => x.InquiryHeaderId == this.InquiryVM.InquiryHeader.Id);
+
+            IList<ShoppingCart> shoppingCartList = new List<ShoppingCart>();
+
+            foreach (var details in InquiryVM.InquiryDetails)
+            {
+                ShoppingCart shoppingCart = new ShoppingCart()
+                {
+                    ProductId = details.ProductId
+                };
+                shoppingCartList.Add(shoppingCart);
+            }
+            // Write New Session - ShopingCartList
+            HttpContext.Session.Clear();
+            HttpContext.Session.Set<IList<ShoppingCart>>(WebConstants.Sessions.ShoppingCartList, shoppingCartList);
+            HttpContext.Session.Set<int>(WebConstants.Sessions.InquiryHeaderId, this.InquiryVM.InquiryHeader.Id);
+
+            return RedirectToAction(nameof(CartController.Index), "Cart");
         }
 
         #region API Calls

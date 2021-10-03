@@ -10,6 +10,7 @@
         public static class Sessions
         {
             public const string ShoppingCartList = "ShoppingCartSession";
+            public const string InquiryHeaderId = "InquiryHeaderSession";
         }
 
         public static class Roles
