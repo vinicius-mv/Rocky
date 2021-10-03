@@ -12,13 +12,13 @@
             public const string ShoppingCartList = "ShoppingCartSession";
         }
 
-        public class Roles
+        public static class Roles
         {
             public const string Admin = "Admin";
             public const string Customer = "Customer";
         }
 
-        public class Settings
+        public static class Settings
         {
             public const string EmailAdmin = "EmailAdmin";
         }
