@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rocky.DataAccess;
 
 namespace Rocky.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211003015031_AddTableInquiryHeaders")]
+    partial class AddTableInquiryHeaders
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -256,28 +258,6 @@ namespace Rocky.DataAccess.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("Rocky.Models.InquiryDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("InquiryHeaderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InquiryHeaderId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("InquiryDetails");
-                });
-
             modelBuilder.Entity("Rocky.Models.InquiryHeader", b =>
                 {
                     b.Property<int>("Id")
@@ -407,25 +387,6 @@ namespace Rocky.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Rocky.Models.InquiryDetail", b =>
-                {
-                    b.HasOne("Rocky.Models.InquiryHeader", "InquiryHeader")
-                        .WithMany()
-                        .HasForeignKey("InquiryHeaderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Rocky.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("InquiryHeader");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Rocky.Models.InquiryHeader", b =>
