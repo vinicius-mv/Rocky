@@ -115,6 +115,32 @@ namespace Rocky.Controllers
 
             await _emailSender.SendEmailAsync(WebConstants.EmailAdmin, subject, messageBody);
 
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claimUserId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            InquiryHeader inquiryHeader = new InquiryHeader()
+            {
+                ApplicationUserId = claimUserId.Value,
+                FullName = ProductUserVM.ApplicationUser.FullName,
+                Email = ProductUserVM.ApplicationUser.Email,
+                PhoneNumber = ProductUserVM.ApplicationUser.PhoneNumber,
+                InquiryDate = DateTime.Now
+            };
+
+            _inquiryHeaderRepo.Add(inquiryHeader);
+            _inquiryHeaderRepo.Save();
+
+            foreach (var product in ProductUserVM.ProductList)
+            {
+                InquiryDetail inquiry = new InquiryDetail()
+                {
+                    InquiryHeaderId = inquiryHeader.Id,
+                    ProductId = product.Id,
+                };
+                _inquiryDetailRepo.Add(inquiry);
+            }
+            _inquiryDetailRepo.Save();
+
             return RedirectToAction(nameof(InquiryConfirmation));
         }
 
