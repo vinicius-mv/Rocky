@@ -37,7 +37,7 @@
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
 
-                        @if (User.IsInRole(WebConstants.AdminRole))
+                        @if (User.IsInRole(WebConstants.Roles.Admin))
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -54,11 +54,11 @@
                         }
 
                         <li class="nav-item">
-                            @if (HttpContextAccessor.HttpContext.Session.Get<List<ShoppingCart>>(WebConstants.SessionCart) != null)
+                            @if (HttpContextAccessor.HttpContext.Session.Get<List<ShoppingCart>>(WebConstants.Sessions.ShoppingCartList) != null)
                             {
                                 <a asp-action="Index" asp-controller="Cart" class="nav-link">
                                     @{
-                                        int count = HttpContextAccessor.HttpContext.Session.Get<List<ShoppingCart>>(WebConstants.SessionCart).Count;
+                                        int count = HttpContextAccessor.HttpContext.Session.Get<List<ShoppingCart>>(WebConstants.Sessions.ShoppingCartList).Count;
                                     }
                                     <i class="fas fa-shopping-cart"></i> &nbsp; (@count)
                                 </a>

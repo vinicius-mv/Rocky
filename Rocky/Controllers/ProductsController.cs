@@ -15,7 +15,7 @@ using System.Linq;
 
 namespace Rocky.Controllers
 {
-    [Authorize(Roles = WebConstants.AdminRole)]
+    [Authorize(Roles = WebConstants.Roles.Admin)]
     public class ProductsController : Controller
     {
         private readonly IProductRepository _productRepo;
@@ -72,7 +72,7 @@ namespace Rocky.Controllers
                 return NotFound();
 
             // Set image path
-            string ImagesFolderPath = _webHostEnviroment.WebRootPath + WebConstants.ImagePath;
+            string ImagesFolderPath = _webHostEnviroment.WebRootPath + WebConstants.Paths.ProductImages;
             string oldImagePath = Path.Combine(ImagesFolderPath, product.Image);
 
             // Delete Image from server
@@ -131,7 +131,7 @@ namespace Rocky.Controllers
                 {
                     // Creating
                     // set new Image path
-                    string ImagesFolderPath = webRootPath + WebConstants.ImagePath;
+                    string ImagesFolderPath = webRootPath + WebConstants.Paths.ProductImages;
                     string fileName = Guid.NewGuid().ToString();
                     string extension = Path.GetExtension(files[0].FileName);
                     string newImagePath = Path.Combine(ImagesFolderPath, fileName + extension);
@@ -156,7 +156,7 @@ namespace Rocky.Controllers
                     if (files.Count > 0)
                     {
                         // set new image path
-                        string ImagesFolderPath = webRootPath + WebConstants.ImagePath;
+                        string ImagesFolderPath = webRootPath + WebConstants.Paths.ProductImages;
                         string fileName = Guid.NewGuid().ToString();
                         string extension = Path.GetExtension(files[0].FileName);
                         string newImagePath = Path.Combine(ImagesFolderPath, fileName + extension);

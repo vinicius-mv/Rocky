@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Rocky.Controllers
 {
-    [Authorize(Roles = WebConstants.AdminRole)]
+    [Authorize(Roles = WebConstants.Roles.Admin)]
     public class InquiryController : Controller
     {
         private readonly IInquiryHeaderRepository _inquiryHeaderRepo;

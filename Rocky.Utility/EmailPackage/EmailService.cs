@@ -60,7 +60,7 @@ namespace Rocky.Utility.EmailPackage
 
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            if(email == WebConstants.EmailAdmin)
+            if(email == WebConstants.Settings.EmailAdmin)
                 email = _emailSettings.Mail;
 
             var mailRequest = new MailRequest { ToEmail = email, Subject = subject, Body = htmlMessage };

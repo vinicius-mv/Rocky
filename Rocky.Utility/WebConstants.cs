@@ -2,13 +2,25 @@
 {
     public static class WebConstants
     {
-        public const string ImagePath = @"\images\product\";
+        public static class Paths
+        {
+            public const string ProductImages = @"\images\product\";
+        }
 
-        public const string SessionCart = "ShoppingCartSession";
+        public static class Sessions
+        {
+            public const string ShoppingCartList = "ShoppingCartSession";
+        }
 
-        public const string AdminRole = "Admin";
-        public const string CustomerRole = "Customer";
+        public class Roles
+        {
+            public const string Admin = "Admin";
+            public const string Customer = "Customer";
+        }
 
-        public const string EmailAdmin = "EmailAdmin";
+        public class Settings
+        {
+            public const string EmailAdmin = "EmailAdmin";
+        }
     }
 }

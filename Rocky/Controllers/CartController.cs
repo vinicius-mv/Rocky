@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Rocky.Controllers
 {
-    [Authorize(Roles = WebConstants.CustomerRole)]
+    [Authorize(Roles = WebConstants.Roles.Customer)]
     public class CartController : Controller
     {
         private readonly IWebHostEnvironment _webHostEnviroment;
@@ -46,7 +46,7 @@ namespace Rocky.Controllers
 
         public IActionResult Index()
         {
-            IList<ShoppingCart> shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.SessionCart) ?? new List<ShoppingCart>();
+            IList<ShoppingCart> shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.Sessions.ShoppingCartList) ?? new List<ShoppingCart>();
 
             List<int> productIdInCartList = shoppingCartList.Select(x => x.ProductId).ToList();
             IEnumerable<Product> prodList = _productRepo.GetAll(x => productIdInCartList.Contains(x.Id));
@@ -67,7 +67,7 @@ namespace Rocky.Controllers
             var claimUserId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
             //var claimUserId = User.FindFirstValue(ClaimTypes.Name);
 
-            IList<ShoppingCart> shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.SessionCart) ?? new List<ShoppingCart>();
+            IList<ShoppingCart> shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.Sessions.ShoppingCartList) ?? new List<ShoppingCart>();
 
             List<int> productIdInCartList = shoppingCartList.Select(x => x.ProductId).ToList();
             IEnumerable<Product> prodList = _productRepo.GetAll(x => productIdInCartList.Contains(x.Id));
@@ -113,7 +113,7 @@ namespace Rocky.Controllers
                 ProductUserVM.ApplicationUser.PhoneNumber,      // {2} -> PhoneNumber
                 productListSB.ToString());                      // {3} -> Products
 
-            await _emailSender.SendEmailAsync(WebConstants.EmailAdmin, subject, messageBody);
+            await _emailSender.SendEmailAsync(WebConstants.Settings.EmailAdmin, subject, messageBody);
 
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claimUserId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
@@ -152,7 +152,7 @@ namespace Rocky.Controllers
 
         public IActionResult Remove(int id)
         {
-            IList<ShoppingCart> shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.SessionCart) ?? new List<ShoppingCart>();
+            IList<ShoppingCart> shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.Sessions.ShoppingCartList) ?? new List<ShoppingCart>();
 
             var productToRemove = shoppingCartList.First(x => x.ProductId == id);
             if (productToRemove == null)
@@ -161,7 +161,7 @@ namespace Rocky.Controllers
             shoppingCartList.Remove(productToRemove);
 
             // Update Session Store 
-            HttpContext.Session.Set<IList<ShoppingCart>>(WebConstants.SessionCart, shoppingCartList);
+            HttpContext.Session.Set<IList<ShoppingCart>>(WebConstants.Sessions.ShoppingCartList, shoppingCartList);
 
             return RedirectToAction(nameof(Index));
         }

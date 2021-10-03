@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Rocky.Controllers
 {
-    [Authorize(Roles = WebConstants.AdminRole)]
+    [Authorize(Roles = WebConstants.Roles.Admin)]
     public class CategoriesController : Controller
     {
         private ICategoryRepository _catRepo;

@@ -49,7 +49,7 @@ namespace Rocky.Controllers
                 return NotFound();
 
             // check if there is any Product on the Session Store
-            var shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.SessionCart) ?? new List<ShoppingCart>();
+            var shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.Sessions.ShoppingCartList) ?? new List<ShoppingCart>();
 
             string productNavProps = $"{nameof(Product.Category)},{nameof(Product.ApplicationType)}";
             var detailsVM = new DetailsVM()
@@ -76,12 +76,12 @@ namespace Rocky.Controllers
         public IActionResult DetailsPost(int id)
         {
             // check if there is any Product on the Session Store
-            var shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.SessionCart) ?? new List<ShoppingCart>();
+            var shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.Sessions.ShoppingCartList) ?? new List<ShoppingCart>();
 
             shoppingCartList.Add(new ShoppingCart { ProductId = id });
 
             // Update the Session Store
-            HttpContext.Session.Set(WebConstants.SessionCart, shoppingCartList);
+            HttpContext.Session.Set(WebConstants.Sessions.ShoppingCartList, shoppingCartList);
 
             return RedirectToAction(nameof(Index));
         }
@@ -89,7 +89,7 @@ namespace Rocky.Controllers
         public IActionResult RemoveFromCart(int id)
         {
             // check if there is any Product on the Session Store
-            var shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.SessionCart) ?? new List<ShoppingCart>();
+            var shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.Sessions.ShoppingCartList) ?? new List<ShoppingCart>();
 
             var itemToRemove = shoppingCartList.SingleOrDefault(x => x.ProductId == id);
             if (itemToRemove != null)
@@ -98,7 +98,7 @@ namespace Rocky.Controllers
             }
 
             // Update the Session Store
-            HttpContext.Session.Set(WebConstants.SessionCart, shoppingCartList);
+            HttpContext.Session.Set(WebConstants.Sessions.ShoppingCartList, shoppingCartList);
 
             return RedirectToAction(nameof(Index));
         }

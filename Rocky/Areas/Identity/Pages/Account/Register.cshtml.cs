@@ -74,10 +74,10 @@ namespace Rocky.Areas.Identity.Pages.Account
         public async Task OnGetAsync(string returnUrl = null)
         {
             // Create Default Roles if there is no roles on Database
-            if (!await _roleManager.RoleExistsAsync(WebConstants.AdminRole))
+            if (!await _roleManager.RoleExistsAsync(WebConstants.Roles.Admin))
             {
-                await _roleManager.CreateAsync(new IdentityRole(WebConstants.AdminRole));
-                await _roleManager.CreateAsync(new IdentityRole(WebConstants.CustomerRole));
+                await _roleManager.CreateAsync(new IdentityRole(WebConstants.Roles.Admin));
+                await _roleManager.CreateAsync(new IdentityRole(WebConstants.Roles.Customer));
             }
 
             ReturnUrl = returnUrl;
@@ -101,10 +101,10 @@ namespace Rocky.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     // Verify if a Admin is creating an User, if so, Set new User as Admin)
-                    if (createAdminUser || User.IsInRole(WebConstants.AdminRole))
-                        await _userManager.AddToRoleAsync(user, WebConstants.AdminRole);
+                    if (createAdminUser || User.IsInRole(WebConstants.Roles.Admin))
+                        await _userManager.AddToRoleAsync(user, WebConstants.Roles.Admin);
 
-                    await _userManager.AddToRoleAsync(user, WebConstants.CustomerRole);
+                    await _userManager.AddToRoleAsync(user, WebConstants.Roles.Customer);
 
                     _logger.LogInformation("User created a new account with password.");
 
