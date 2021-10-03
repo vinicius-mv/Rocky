@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Rocky.DataAccess;
+using Rocky.DataAccess.Repository.Interfaces;
 using Rocky.Models;
 using Rocky.Utility;
 using Rocky.ViewModels;
@@ -20,20 +21,27 @@ namespace Rocky.Controllers
     [Authorize(Roles = WebConstants.CustomerRole)]
     public class CartController : Controller
     {
-        private readonly ApplicationDbContext _context;
-
         private readonly IWebHostEnvironment _webHostEnviroment;
-
         private readonly IEmailSender _emailSender;
 
-        [BindProperty] // Automatically binds to post Actions
+        private readonly IProductRepository _productRepo;
+        private readonly IApplicationUserRepository _appUserRepo;
+        private readonly IInquiryHeaderRepository _inquiryHeaderRepo;
+        private readonly IInquiryDetailRepository _inquiryDetailRepo;
+
+        [BindProperty]
         public ProductUserVM ProductUserVM { get; set; }
 
-        public CartController(ApplicationDbContext context, IWebHostEnvironment webHostEnviroment, IEmailSender emailSender)
+        public CartController(IProductRepository productRepo, IApplicationUserRepository appUserRepo, IInquiryHeaderRepository inquiryHeaderRepo,
+            IInquiryDetailRepository inquiryDetailRepo, IWebHostEnvironment webHostEnviroment, IEmailSender emailSender)
         {
-            _context = context;
+            _productRepo = productRepo;
+            _appUserRepo = appUserRepo;
             _webHostEnviroment = webHostEnviroment;
             _emailSender = emailSender;
+
+            _inquiryHeaderRepo = inquiryHeaderRepo;
+            _inquiryDetailRepo = inquiryDetailRepo;
         }
 
         public IActionResult Index()
@@ -41,8 +49,8 @@ namespace Rocky.Controllers
             IList<ShoppingCart> shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.SessionCart) ?? new List<ShoppingCart>();
 
             List<int> productIdInCartList = shoppingCartList.Select(x => x.ProductId).ToList();
-            IEnumerable<Product> prodList = _context.Products.Where(x => productIdInCartList.Contains(x.Id));
-           
+            IEnumerable<Product> prodList = _productRepo.GetAll(x => productIdInCartList.Contains(x.Id));
+
             return View(prodList);
         }
 
@@ -62,11 +70,11 @@ namespace Rocky.Controllers
             IList<ShoppingCart> shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.SessionCart) ?? new List<ShoppingCart>();
 
             List<int> productIdInCartList = shoppingCartList.Select(x => x.ProductId).ToList();
-            IEnumerable<Product> prodList = _context.Products.Where(x => productIdInCartList.Contains(x.Id));
+            IEnumerable<Product> prodList = _productRepo.GetAll(x => productIdInCartList.Contains(x.Id));
 
             ProductUserVM = new ProductUserVM()
             {
-                ApplicationUser = _context.ApplicationUsers.FirstOrDefault(x => x.Id == claimUserId.Value),
+                ApplicationUser = _appUserRepo.FirstOrDefault(x => x.Id == claimUserId.Value),
                 ProductList = prodList.ToList()
             };
 
@@ -76,13 +84,13 @@ namespace Rocky.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("Summary")]
-        public async Task<IActionResult> SummaryPost() // binded prop ProductUserVM
+        public async Task<IActionResult> SummaryPost()
         {
             var pathToInquiryTemplate = $"{_webHostEnviroment.WebRootPath}{Path.DirectorySeparatorChar}templates{Path.DirectorySeparatorChar}Inquiry.html";
 
             var subject = "New Inquiry";
             var htmlBody = "";
-            using(StreamReader sr = System.IO.File.OpenText(pathToInquiryTemplate))
+            using (StreamReader sr = System.IO.File.OpenText(pathToInquiryTemplate))
             {
                 htmlBody = sr.ReadToEnd();
             }
@@ -92,8 +100,8 @@ namespace Rocky.Controllers
             // Phone: {2}
             // Products: {3}
 
-            var productListSB = new StringBuilder();  
-            foreach(var product in ProductUserVM.ProductList)
+            var productListSB = new StringBuilder();
+            foreach (var product in ProductUserVM.ProductList)
             {
                 productListSB.Append($" - Name: {product.Name} <span style='font-size: 14px;'> (ID: {product.Id}) </span> <br />");
             }
@@ -110,24 +118,24 @@ namespace Rocky.Controllers
             return RedirectToAction(nameof(InquiryConfirmation));
         }
 
-        public IActionResult InquiryConfirmation() 
+        public IActionResult InquiryConfirmation()
         {
             HttpContext.Session.Clear();
             return View();
         }
 
         public IActionResult Remove(int id)
-        {   
+        {
             IList<ShoppingCart> shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.SessionCart) ?? new List<ShoppingCart>();
 
             var productToRemove = shoppingCartList.First(x => x.ProductId == id);
-            if(productToRemove == null)
+            if (productToRemove == null)
                 throw new InvalidOperationException("Failed to remove product from cart");
 
             shoppingCartList.Remove(productToRemove);
 
             // Update Session Store 
-            HttpContext.Session.Set<IList<ShoppingCart>>(WebConstants.SessionCart, shoppingCartList);  
+            HttpContext.Session.Set<IList<ShoppingCart>>(WebConstants.SessionCart, shoppingCartList);
 
             return RedirectToAction(nameof(Index));
         }

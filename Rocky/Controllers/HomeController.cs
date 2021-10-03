@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Rocky.DataAccess;
+using Rocky.DataAccess.Repository.Interfaces;
 using Rocky.Models;
 using Rocky.Utility;
 using Rocky.ViewModels;
@@ -17,20 +18,26 @@ namespace Rocky.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+        private readonly IProductRepository _productRepo;
+
+        private readonly ICategoryRepository _categoryRepo;
+
+        public HomeController(ILogger<HomeController> logger, IProductRepository productRepo, ICategoryRepository categoryRepo)
         {
             _logger = logger;
-            _context = context;
+            _productRepo = productRepo;
+            _categoryRepo = categoryRepo;
         }
 
         public IActionResult Index()
         {
+            string productNavProps = $"{nameof(Product.Category)},{nameof(Product.ApplicationType)}";
+
             var homeVM = new HomeVM()
             {
-                Products = _context.Products.Include(x => x.Category).Include(x => x.ApplicationType),
-                Categories = _context.Categories,
+                Products = _productRepo.GetAll(includeProperties: productNavProps, isTracking: false),
+                Categories = _categoryRepo.GetAll(isTracking: false),
             };
 
             return View(homeVM);
@@ -44,9 +51,10 @@ namespace Rocky.Controllers
             // check if there is any Product on the Session Store
             var shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.SessionCart) ?? new List<ShoppingCart>();
 
+            string productNavProps = $"{nameof(Product.Category)},{nameof(Product.ApplicationType)}";
             var detailsVM = new DetailsVM()
             {
-                Product = _context.Products.Include(x => x.Category).Include(x => x.ApplicationType).FirstOrDefault(x => x.Id == id),
+                Product = _productRepo.FirstOrDefault(p => p.Id == id, includeProperties: productNavProps, isTracking: false),
                 ExistsInCart = ShoppingCartContains(productId: id, shoppingCartList)
             };
 
@@ -84,14 +92,14 @@ namespace Rocky.Controllers
             var shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.SessionCart) ?? new List<ShoppingCart>();
 
             var itemToRemove = shoppingCartList.SingleOrDefault(x => x.ProductId == id);
-            if(itemToRemove != null)
+            if (itemToRemove != null)
             {
                 shoppingCartList.Remove(itemToRemove);
             }
 
             // Update the Session Store
             HttpContext.Session.Set(WebConstants.SessionCart, shoppingCartList);
-            
+
             return RedirectToAction(nameof(Index));
         }
 
