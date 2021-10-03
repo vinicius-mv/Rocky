@@ -1,0 +1,24 @@
+﻿@using Rocky.Utility
+
+@if (TempData[WebConstants.Notifications.Success] != null)
+{
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/toastr/dist/js/toastr.min.js"></script>
+    <script type="text/javascript">
+        //toastr.options.positionClass = 'toast-bottom-right';
+        toastr.success('@TempData[WebConstants.Notifications.Success]');
+    </script>
+}
+
+@if (TempData[WebConstants.Notifications.Error] != null)
+{
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/toastr/dist/js/toastr.min.js"></script>
+    <script type="text/javascript">
+        //toastr.options.positionClass = 'toast-bottom-right';
+        toastr.error('@TempData[WebConstants.Notifications.Error]');
+    </script>
+}
+
+
+

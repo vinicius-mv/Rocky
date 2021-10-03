@@ -39,9 +39,10 @@ namespace Rocky.Controllers
             {
                 _catRepo.Add(category);
                 _catRepo.Save();
-
+                TempData[WebConstants.Notifications.Success] = "Category created succesfully";
                 return RedirectToAction(nameof(Index));
             }
+            TempData[WebConstants.Notifications.Error] = "Failed to create category";
             return View(category);
         }
 
@@ -95,11 +96,14 @@ namespace Rocky.Controllers
                 return NotFound();
 
             var category = _catRepo.Find(id.Value);
-            if(category == null)
+            if (category == null)
+            {
+                TempData[WebConstants.Notifications.Error] = "Failed to delete category";
                 return NotFound();
-
+            }
             _catRepo.Remove(category);
             _catRepo.Save();
+            TempData[WebConstants.Notifications.Success] = "Category deleted succesfully";
 
             return RedirectToAction(nameof(Index));
         }
