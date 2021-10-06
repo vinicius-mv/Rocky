@@ -5,6 +5,11 @@ namespace Rocky.Models
 {
     public class Product
     {
+        public Product()
+        {
+            TempSqft = 1;
+        }
+
         [Key]
         public int Id { get; set; }
 
@@ -19,6 +24,10 @@ namespace Rocky.Models
         public double Price { get; set; }
 
         public string Image { get; set; }
+
+        [NotMapped]
+        [Range(1, 10_0000)]
+        public int TempSqft { get; set; }
 
         // nav props
         [Display(Name = "Category Type")]
