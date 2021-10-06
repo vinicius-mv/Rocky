@@ -73,12 +73,12 @@ namespace Rocky.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult DetailsPost(int id)
+        public IActionResult DetailsPost(int id, DetailsVM detailsVM)
         {
             // check if there is any Product on the Session Store
             var shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.Sessions.ShoppingCartList) ?? new List<ShoppingCart>();
 
-            shoppingCartList.Add(new ShoppingCart { ProductId = id });
+            shoppingCartList.Add(new ShoppingCart { ProductId = id, SqFt = detailsVM.Product.TempSqft });
 
             // Update the Session Store
             HttpContext.Session.Set(WebConstants.Sessions.ShoppingCartList, shoppingCartList);
