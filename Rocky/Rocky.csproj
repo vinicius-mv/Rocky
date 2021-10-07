@@ -6,9 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Utility\**" />
     <Compile Remove="wwwroot\lib\tinymce\js\**" />
+    <Content Remove="Utility\**" />
     <Content Remove="wwwroot\lib\tinymce\js\**" />
+    <EmbeddedResource Remove="Utility\**" />
     <EmbeddedResource Remove="wwwroot\lib\tinymce\js\**" />
+    <None Remove="Utility\**" />
     <None Remove="wwwroot\lib\tinymce\js\**" />
   </ItemGroup>
 
@@ -30,7 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Utility\" />
     <Folder Include="wwwroot\images\product\" />
     <Folder Include="wwwroot\lib\sweetalert2\" />
   </ItemGroup>

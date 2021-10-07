@@ -174,5 +174,19 @@ namespace Rocky.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateCart(IEnumerable<Product> productList)
+        {
+            List<ShoppingCart> shoppingCartist = new List<ShoppingCart>();
+            foreach (var product in productList)
+            {
+                shoppingCartist.Add(new ShoppingCart() { ProductId = product.Id, SqFt = product.TempSqft });
+            }
+            HttpContext.Session.Set(WebConstants.Sessions.ShoppingCartList, shoppingCartist);
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
