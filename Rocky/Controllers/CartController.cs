@@ -61,8 +61,15 @@ namespace Rocky.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult IndexPost()
+        public IActionResult IndexPost(IEnumerable<Product> products)
         {
+            IList<ShoppingCart> shoppingCartList = new List<ShoppingCart>();
+            foreach (var prod in products)
+            {
+                shoppingCartList.Add(new ShoppingCart { ProductId = prod.Id, SqFt = prod.TempSqft });
+            }
+            HttpContext.Session.Set(WebConstants.Sessions.ShoppingCartList, shoppingCartList);
+
             return RedirectToAction(nameof(Summary));
         }
 
