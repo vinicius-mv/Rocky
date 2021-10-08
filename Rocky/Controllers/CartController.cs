@@ -110,6 +110,13 @@ namespace Rocky.Controllers
             List<int> productIdInCartList = shoppingCartList.Select(x => x.ProductId).ToList();
             IEnumerable<Product> prodList = _productRepo.GetAll(x => productIdInCartList.Contains(x.Id));
 
+            // Add SqFt info to the ProductList
+            foreach (ShoppingCart cartItem in shoppingCartList)
+            {
+                Product prodTemp = prodList.FirstOrDefault(x => x.Id == cartItem.ProductId);
+                prodTemp.TempSqft = cartItem.SqFt;
+            }
+            
             // Creating a VM with User Details and Product Details
             ProductUserVM = new ProductUserVM()
             {
