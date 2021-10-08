@@ -1,9 +1,9 @@
 ﻿using MailKit.Security;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity.UI.Services;
 
 // REF: https://www.c-sharpcorner.com/article/send-email-using-asp-net-core-5-web-api/
 namespace Rocky.Utility.EmailPackage
@@ -60,7 +60,7 @@ namespace Rocky.Utility.EmailPackage
 
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            if(email == WebConstants.Settings.EmailAdmin)
+            if (email == WebConstants.Settings.EmailAdmin)
                 email = _emailSettings.Mail;
 
             var mailRequest = new MailRequest { ToEmail = email, Subject = subject, Body = htmlMessage };

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
-using Rocky.DataAccess;
 using Rocky.DataAccess.Repository.Interfaces;
 using Rocky.Models;
 using Rocky.Utility;
@@ -94,7 +93,7 @@ namespace Rocky.Controllers
                 else
                 {
                     // Admin creating a new Inquiry
-                    appUser = new ApplicationUser(); 
+                    appUser = new ApplicationUser();
                 }
             }
             else // Customer creating a new Inquiry
@@ -116,7 +115,7 @@ namespace Rocky.Controllers
                 Product prodTemp = prodList.FirstOrDefault(x => x.Id == cartItem.ProductId);
                 prodTemp.TempSqft = cartItem.SqFt;
             }
-            
+
             // Creating a VM with User Details and Product Details
             ProductUserVM = new ProductUserVM()
             {
@@ -141,7 +140,7 @@ namespace Rocky.Controllers
                 htmlBody = sr.ReadToEnd();
             }
             // html placeholders
-            // Name: {0} 
+            // Name: {0}
             // Email: {1}
             // Phone: {2}
             // Products: {3}
@@ -208,7 +207,7 @@ namespace Rocky.Controllers
 
             shoppingCartList.Remove(productToRemove);
 
-            // Update Session Store 
+            // Update Session Store
             HttpContext.Session.Set<IList<ShoppingCart>>(WebConstants.Sessions.ShoppingCartList, shoppingCartList);
 
             TempData[WebConstants.Notifications.Success] = "Action Completed Successfully";

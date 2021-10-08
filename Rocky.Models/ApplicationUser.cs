@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Rocky.Models
 {
     public class ApplicationUser : IdentityUser
-    {   
+    {
         [Required]
         public string FullName { get; set; }
 

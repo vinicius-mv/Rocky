@@ -1,12 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Rocky.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rocky.DataAccess.Repository.Interfaces
 {
@@ -23,7 +17,7 @@ namespace Rocky.DataAccess.Repository.Interfaces
         {
             var inquiryHeaderFromDb = _context.InquiryHeaders.AsNoTracking().FirstOrDefault(x => x.Id == inquiryHeader.Id);
 
-            if(inquiryHeaderFromDb != null)
+            if (inquiryHeaderFromDb != null)
             {
                 // Update all the properties
                 _context.InquiryHeaders.Update(inquiryHeader);

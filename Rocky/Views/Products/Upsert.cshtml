@@ -124,7 +124,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
             <div class="col-4">
                 @if (Model.Product.Id > 0)
@@ -132,10 +131,8 @@
                     <img src="@WebConstants.Paths.ProductImages@Model.Product.Image" width="100%" style="border-radius: 10px; border: 1px solid #bbb" />
                 }
             </div>
-
         </div>
     </div>
-
 </form>
 
 @section Scripts {
@@ -162,8 +159,5 @@
         tinymce.init({
             selector: '.tinymce'
         });
-
     </script>
 }
-
-

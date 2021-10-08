@@ -14,9 +14,9 @@ namespace Rocky.Utility
         {
             var value = session.GetString(key);
 
-            if(value == null)
+            if (value == null)
                 return default(T);
-             
+
             return JsonSerializer.Deserialize<T>(value);
         }
     }

@@ -112,7 +112,6 @@
      * this as well.
      */
 
-
     if (prefix === 'fas') {
       defineIcons('fa', icons);
     }
@@ -581,5 +580,4 @@
   bunker(function () {
     defineIcons('fab', icons);
   });
-
 }());

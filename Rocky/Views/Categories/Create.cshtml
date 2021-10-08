@@ -8,7 +8,7 @@
         'All' add a summary errors on top of the form
         *@
         <div asp-validation-summary="ModelOnly" class="text-danger" />
-       
+
 		<div class="form-group row">
 			<h2 class="text-info pl-3">Add Category</h2>
 		</div>
@@ -23,7 +23,6 @@
                         <input asp-for="Name" class="form-control" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
-
                 </div>
                 <div class="form-group row py-2">
                     <div class="col-4">
@@ -33,7 +32,6 @@
                         <input asp-for="DisplayOrder" class="form-control" />
                         <span asp-validation-for="DisplayOrder" class="text-danger"></span>
                     </div>
-
                 </div>
                 <div class="form-group row py-2">
                     <div class="col-8 offset-4 row">
@@ -51,10 +49,8 @@
             <div class="col-4">
                 @* Keep this empty *@
             </div>
-
         </div>
 	</div>
-
 </form>
 
 @section Scripts {
@@ -62,5 +58,3 @@
         <partial name="_ValidationScriptsPartial" />
     }
 }
-
-

@@ -1,6 +1,4 @@
 ﻿using Rocky.Models;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Rocky.DataAccess.Repository.Interfaces
 {

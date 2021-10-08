@@ -74,11 +74,6 @@ body {
     line-height: 60px; /* Vertically center the text there */
 }
 
-
-
-
-
-
 .port-image {
     width: 100%;
 }
@@ -118,9 +113,6 @@ body {
     transition: all .5s;
 }
 
-
-
-
 .boxContainer {
     display: table;
 }
@@ -146,8 +138,6 @@ body {
     left: 0;
     width: 100%;
 }
-
-
 
 #logreg-forms {
     width: 412px;
@@ -211,7 +201,6 @@ body {
     border: 1px solid red;
 }
 
-
 #logreg-forms button[type="submit"] {
     margin-top: 10px;
 }
@@ -220,7 +209,6 @@ body {
     background-color: #3C589C;
     color: white;
 }
-
 
 #logreg-forms .form-reset, #logreg-forms .form-signup {
     display: none;

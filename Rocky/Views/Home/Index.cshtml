@@ -21,7 +21,6 @@
 			<partial name="_ProductCard" model="@product" />
 		}
 	</div>
-
 </div>
 
 @section Scripts {
@@ -31,9 +30,9 @@
     $(document).ready(function(){
 
 		$(".filter-button").click(function(event){
-			
+
 			let filterValue = $(this).attr("data-filter");
-			
+
 			if(filterValue == "all")
 			{
 				$('.filter').show('1000');
@@ -49,6 +48,3 @@
 </script>
 
 }
-
-
-

@@ -7,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rocky.DataAccess;
-using Rocky.DataAccess.Repository;
 using Rocky.DataAccess.Repository.Interfaces;
 using Rocky.Utility;
 using Rocky.Utility.EmailPackage;
@@ -84,7 +83,7 @@ namespace Rocky
             app.UseRouting();
 
             // identity settings
-            app.UseAuthentication(); 
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
@@ -92,7 +91,7 @@ namespace Rocky
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages(); // Add route to RazorPages - Scaffolded Identity Razor Pages 
+                endpoints.MapRazorPages(); // Add route to RazorPages - Scaffolded Identity Razor Pages
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

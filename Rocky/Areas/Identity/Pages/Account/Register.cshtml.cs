@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -15,6 +8,12 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Rocky.Models;
 using Rocky.Utility;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 
 namespace Rocky.Areas.Identity.Pages.Account
 {
@@ -126,10 +125,10 @@ namespace Rocky.Areas.Identity.Pages.Account
                     else
                     {
                         // Admin Users when creating a new user will stay logged in and wont Authenticate
-                        if(User.Identity.IsAuthenticated)
+                        if (User.Identity.IsAuthenticated)
 
-                        // If Not Authenticated - Log In and Authenticate with the created Acc
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                            // If Not Authenticated - Log In and Authenticate with the created Acc
+                            await _signInManager.SignInAsync(user, isPersistent: false);
 
                         return LocalRedirect(returnUrl);
                     }

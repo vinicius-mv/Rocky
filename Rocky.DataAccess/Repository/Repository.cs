@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rocky.DataAccess.Repository
 {
@@ -23,7 +21,7 @@ namespace Rocky.DataAccess.Repository
 
         public void Add(T entity)
         {
-           _dbSet.Add(entity);
+            _dbSet.Add(entity);
         }
 
         public T Find(int id)

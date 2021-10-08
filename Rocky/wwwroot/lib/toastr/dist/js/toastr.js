@@ -237,7 +237,6 @@
                     $container.append($toastElement);
                 }
 
-
                 $toastElement[options.showMethod](
                     { duration: options.showDuration, easing: options.showEasing, complete: options.onShown }
                 );
@@ -326,7 +325,6 @@
                 }
             }
             //#endregion
-
         })();
     });
 }(typeof define === 'function' && define.amd ? define : function (deps, factory) {

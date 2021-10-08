@@ -1,6 +1,6 @@
 ﻿namespace Rocky.Utility.EmailPackage
 {
-    public class EmailSettings 
+    public class EmailSettings
     {
         public string Mail { get; set; }
         public string DisplayName { get; set; }
