@@ -75,18 +75,45 @@ namespace Rocky.Controllers
 
         public IActionResult Summary()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claimUserId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            //var claimUserId = User.FindFirstValue(ClaimTypes.Name);
+            ApplicationUser appUser;
 
+            if (User.IsInRole(WebConstants.Roles.Admin))
+            {
+                int sessionInquiryHeaderId = HttpContext.Session.Get<int>(WebConstants.Sessions.InquiryHeaderId);
+                if (sessionInquiryHeaderId > 0)
+                {
+                    // Admin Updating an Inquiry)
+                    InquiryHeader inquiryHeader = _inquiryHeaderRepo.FirstOrDefault(x => x.Id == sessionInquiryHeaderId);
+                    appUser = new ApplicationUser()
+                    {
+                        Email = inquiryHeader.Email,
+                        FullName = inquiryHeader.FullName,
+                        PhoneNumber = inquiryHeader.PhoneNumber
+                    };
+                }
+                else
+                {
+                    // Admin creating a new Inquiry
+                    appUser = new ApplicationUser(); 
+                }
+            }
+            else // Customer creating a new Inquiry
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                //var claimUserId = User.FindFirstValue(ClaimTypes.Name);
+                var claimUserId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                appUser = _appUserRepo.FirstOrDefault(x => x.Id == claimUserId.Value);
+            }
+
+            // Getting Session Shopping Cart List - Get Products Details
             IList<ShoppingCart> shoppingCartList = HttpContext.Session.Get<IList<ShoppingCart>>(WebConstants.Sessions.ShoppingCartList) ?? new List<ShoppingCart>();
-
             List<int> productIdInCartList = shoppingCartList.Select(x => x.ProductId).ToList();
             IEnumerable<Product> prodList = _productRepo.GetAll(x => productIdInCartList.Contains(x.Id));
 
+            // Creating a VM with User Details and Product Details
             ProductUserVM = new ProductUserVM()
             {
-                ApplicationUser = _appUserRepo.FirstOrDefault(x => x.Id == claimUserId.Value),
+                ApplicationUser = appUser,
                 ProductList = prodList.ToList()
             };
 
