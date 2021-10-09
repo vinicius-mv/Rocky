@@ -25,14 +25,20 @@ namespace Rocky.Controllers
 
         private readonly IProductRepository _productRepo;
         private readonly IApplicationUserRepository _appUserRepo;
+
         private readonly IInquiryHeaderRepository _inquiryHeaderRepo;
         private readonly IInquiryDetailRepository _inquiryDetailRepo;
+
+        private readonly IOrderHeaderRepository _orderHeaderRepo;
+        private readonly IOrderDetailRepository _orderDetailRepo;
 
         [BindProperty]
         public ProductUserVM ProductUserVM { get; set; }
 
-        public CartController(IProductRepository productRepo, IApplicationUserRepository appUserRepo, IInquiryHeaderRepository inquiryHeaderRepo,
-            IInquiryDetailRepository inquiryDetailRepo, IWebHostEnvironment webHostEnviroment, IEmailSender emailSender)
+        public CartController(IWebHostEnvironment webHostEnviroment, IEmailSender emailSender,
+            IProductRepository productRepo, IApplicationUserRepository appUserRepo,
+            IInquiryHeaderRepository inquiryHeaderRepo, IInquiryDetailRepository inquiryDetailRepo,
+            IOrderHeaderRepository orderHeaderRepo, IOrderDetailRepository orderDetailRepo)
         {
             _productRepo = productRepo;
             _appUserRepo = appUserRepo;
@@ -41,6 +47,9 @@ namespace Rocky.Controllers
 
             _inquiryHeaderRepo = inquiryHeaderRepo;
             _inquiryDetailRepo = inquiryDetailRepo;
+
+            _orderHeaderRepo = orderHeaderRepo;
+            _orderDetailRepo = orderDetailRepo;
         }
 
         public IActionResult Index()
@@ -131,6 +140,59 @@ namespace Rocky.Controllers
         [ActionName("Summary")]
         public async Task<IActionResult> SummaryPost()
         {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claimUserId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (User.IsInRole(WebConstants.Roles.Admin))
+            {
+                OrderHeader orderHeader = CreateOrder(claimUserId);
+
+                return RedirectToAction(nameof(InquiryConfirmation), new { id = orderHeader.Id });
+            }
+            else
+            {
+                await CreateInquiry(claimUserId);
+            }
+            return RedirectToAction(nameof(InquiryConfirmation));
+        }
+
+        private OrderHeader CreateOrder(Claim claimUserId)
+        {
+            OrderHeader orderHeader = new OrderHeader()
+            {
+                CreatedByUserId = claimUserId.Value,
+                FinalOrderTotal = ProductUserVM.ProductList.Sum(p => p.Price * p.TempSqft),
+                City = ProductUserVM.ApplicationUser.City,
+                StreetAddress = ProductUserVM.ApplicationUser.StreetAddress,
+                State = ProductUserVM.ApplicationUser.State,
+                PostalCode = ProductUserVM.ApplicationUser.PostalCode,
+                FullName = ProductUserVM.ApplicationUser.Email,
+                PhoneNumber = ProductUserVM.ApplicationUser.PhoneNumber,
+                OrderDate = DateTime.Now,
+                OrderStatus = WebConstants.OrderStatus.Pending
+            };
+
+            _orderHeaderRepo.Add(orderHeader);
+            _orderHeaderRepo.Save(); // database generate id for orderHeader
+
+            foreach (var prod in ProductUserVM.ProductList)
+            {
+                OrderDetail orderDetail = new OrderDetail()
+                {
+                    OrderHeaderId = orderHeader.Id,
+                    PricePerSqFt = prod.Price,
+                    Sqft = prod.TempSqft,
+                    ProductId = prod.Id
+                };
+                _orderDetailRepo.Add(orderDetail);
+                _orderDetailRepo.Save();
+            }
+
+            return orderHeader;
+        }
+
+        private async Task CreateInquiry(Claim claimUserId)
+        {
             var pathToInquiryTemplate = $"{_webHostEnviroment.WebRootPath}{Path.DirectorySeparatorChar}templates{Path.DirectorySeparatorChar}Inquiry.html";
 
             var subject = "New Inquiry";
@@ -160,9 +222,6 @@ namespace Rocky.Controllers
 
             await _emailSender.SendEmailAsync(WebConstants.Settings.EmailAdmin, subject, messageBody);
 
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claimUserId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-
             InquiryHeader inquiryHeader = new InquiryHeader()
             {
                 ApplicationUserId = claimUserId.Value,
@@ -187,8 +246,6 @@ namespace Rocky.Controllers
             _inquiryDetailRepo.Save();
 
             TempData[WebConstants.Notifications.Success] = "Action Completed Successfully";
-
-            return RedirectToAction(nameof(InquiryConfirmation));
         }
 
         public IActionResult InquiryConfirmation()
