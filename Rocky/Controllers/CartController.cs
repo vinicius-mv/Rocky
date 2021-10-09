@@ -248,10 +248,13 @@ namespace Rocky.Controllers
             TempData[WebConstants.Notifications.Success] = "Action Completed Successfully";
         }
 
-        public IActionResult InquiryConfirmation()
+        public IActionResult InquiryConfirmation(int id = 0)
         {
+            // if id > 0, send Order to the view (Order Confirmation)
+            // else send null to the view (Inquiry Confirmation)
+            OrderHeader orderHeader = _orderHeaderRepo.FirstOrDefault(x => x.Id == id);
             HttpContext.Session.Clear();
-            return View();
+            return View(orderHeader);
         }
 
         public IActionResult Remove(int id)
