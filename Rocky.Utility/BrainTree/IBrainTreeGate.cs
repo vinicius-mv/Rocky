@@ -1,4 +1,5 @@
 ﻿using Braintree;
+using Rocky.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,9 @@ namespace Rocky.Utility.BrainTree
         IBraintreeGateway CreateGateway();
 
         IBraintreeGateway GetGateway();
+
+        Task<Result<Transaction>> ProcessPaymentAsync(string orderId, decimal amount, string clientTokenNonce);
+
+        Task<string> GenerateClientTokenNonceAsync();
     }
 }

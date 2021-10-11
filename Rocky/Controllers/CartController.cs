@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Braintree;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -87,7 +88,7 @@ namespace Rocky.Controllers
             return RedirectToAction(nameof(Summary));
         }
 
-        public IActionResult Summary()
+        public async Task<IActionResult> Summary()
         {
             ApplicationUser appUser;
 
@@ -111,8 +112,8 @@ namespace Rocky.Controllers
                     appUser = new ApplicationUser();
                 }
 
-                var gateway = _brainTree.GetGateway();
-                var clientToken = gateway.ClientToken.Generate();
+                string clientToken = await _brainTree.GenerateClientTokenNonceAsync();
+
                 ViewBag.ClientToken = clientToken;
             }
             else // Customer creating a new Inquiry
@@ -148,7 +149,7 @@ namespace Rocky.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("Summary")]
-        public async Task<IActionResult> SummaryPost()
+        public async Task<IActionResult> SummaryPost(IFormCollection formCollection)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claimUserId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
@@ -157,12 +158,29 @@ namespace Rocky.Controllers
             {
                 OrderHeader orderHeader = CreateOrder(claimUserId);
 
+                string nonceFromTheClient = formCollection["payment_method_nonce"];
+                decimal amount = Convert.ToDecimal(orderHeader.FinalOrderTotal);
+                string orderId = orderHeader.Id.ToString();
+
+                Result<Transaction> result = await _brainTree.ProcessPaymentAsync(orderId, amount, nonceFromTheClient);
+
+                if (result.Target.ProcessorResponseText == "Approved")
+                {
+                    orderHeader.TransactionId = result.Target.Id;
+                    orderHeader.OrderStatus = WebConstants.OrderStatus.Approved;
+                }
+                else
+                {
+                    orderHeader.OrderStatus = WebConstants.OrderStatus.Cancelled;
+                }
+
                 return RedirectToAction(nameof(InquiryConfirmation), new { id = orderHeader.Id });
             }
             else
             {
                 await CreateInquiry(claimUserId);
             }
+
             return RedirectToAction(nameof(InquiryConfirmation));
         }
 

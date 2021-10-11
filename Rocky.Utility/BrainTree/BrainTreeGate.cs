@@ -1,6 +1,7 @@
 ﻿using Braintree;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Rocky.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,29 @@ namespace Rocky.Utility.BrainTree
                 _brainTreeGateway = CreateGateway();
 
             return _brainTreeGateway;
+        }
+
+        public async Task<Result<Transaction>> ProcessPaymentAsync(string orderId, decimal amount, string clientTokenNonce)
+        {
+            var request = new TransactionRequest
+            {
+                Amount = amount,
+                PaymentMethodNonce = clientTokenNonce,
+                OrderId = orderId,
+                Options = new TransactionOptionsRequest
+                {
+                    SubmitForSettlement = true
+                }
+            };
+
+            var gateway = GetGateway();
+
+            return await Task.Factory.StartNew(() => gateway.Transaction.Sale(request));
+        }
+
+        public async Task<string> GenerateClientTokenNonceAsync()
+        {
+            return await Task.Factory.StartNew(() => GetGateway().ClientToken.Generate());
         }
     }
 }
