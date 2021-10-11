@@ -41,7 +41,7 @@ namespace Rocky.Controllers
         public CartController(IWebHostEnvironment webHostEnviroment, IEmailSender emailSender,
             IProductRepository productRepo, IApplicationUserRepository appUserRepo,
             IInquiryHeaderRepository inquiryHeaderRepo, IInquiryDetailRepository inquiryDetailRepo,
-            IOrderHeaderRepository orderHeaderRepo, IOrderDetailRepository orderDetailRepo
+            IOrderHeaderRepository orderHeaderRepo, IOrderDetailRepository orderDetailRepo,
             IBrainTreeGate brainTree)
         {
             _productRepo = productRepo;
