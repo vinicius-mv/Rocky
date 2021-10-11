@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Rocky.DataAccess;
 using Rocky.DataAccess.Repository.Interfaces;
 using Rocky.Utility;
+using Rocky.Utility.BrainTree;
 using Rocky.Utility.EmailPackage;
 using System;
 
@@ -59,6 +60,10 @@ namespace Rocky
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
+
+            // Braintree
+            //services.Configure<BrainTreeSettings>(Configuration.GetSection("BrainTree")); // inject IConfiguration in the BrainTree
+            services.AddSingleton<IBrainTreeGate, BrainTreeGate>();
 
             services.AddControllersWithViews();
         }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Rocky.DataAccess.Repository.Interfaces;
 using Rocky.Models;
 using Rocky.Utility;
+using Rocky.Utility.BrainTree;
 using Rocky.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -32,13 +33,16 @@ namespace Rocky.Controllers
         private readonly IOrderHeaderRepository _orderHeaderRepo;
         private readonly IOrderDetailRepository _orderDetailRepo;
 
+        private readonly IBrainTreeGate _brainTree;
+
         [BindProperty]
         public ProductUserVM ProductUserVM { get; set; }
 
         public CartController(IWebHostEnvironment webHostEnviroment, IEmailSender emailSender,
             IProductRepository productRepo, IApplicationUserRepository appUserRepo,
             IInquiryHeaderRepository inquiryHeaderRepo, IInquiryDetailRepository inquiryDetailRepo,
-            IOrderHeaderRepository orderHeaderRepo, IOrderDetailRepository orderDetailRepo)
+            IOrderHeaderRepository orderHeaderRepo, IOrderDetailRepository orderDetailRepo
+            IBrainTreeGate brainTree)
         {
             _productRepo = productRepo;
             _appUserRepo = appUserRepo;
@@ -50,6 +54,8 @@ namespace Rocky.Controllers
 
             _orderHeaderRepo = orderHeaderRepo;
             _orderDetailRepo = orderDetailRepo;
+
+            _brainTree = brainTree;
         }
 
         public IActionResult Index()
@@ -104,6 +110,10 @@ namespace Rocky.Controllers
                     // Admin creating a new Inquiry
                     appUser = new ApplicationUser();
                 }
+
+                var gateway = _brainTree.GetGateway();
+                var clientToken = gateway.ClientToken.Generate();
+                ViewBag.ClientToken = clientToken;
             }
             else // Customer creating a new Inquiry
             {
