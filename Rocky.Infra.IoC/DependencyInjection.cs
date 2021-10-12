@@ -53,6 +53,13 @@ namespace Rocky.Infra.IoC
             //services.Configure<BrainTreeSettings>(Configuration.GetSection("BrainTree")); // inject IConfiguration in the BrainTree
             services.AddSingleton<IBrainTreeGate, BrainTreeGate>();
 
+            // Facebook Auth
+            services.AddAuthentication().AddFacebook(options =>
+            {
+                options.AppId = configuration["FacebookSettings:AppId"];
+                options.AppSecret = configuration["FacebookSettings:AppSecret"];
+            });
+
             return services;
         }
     }

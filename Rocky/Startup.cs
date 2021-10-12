@@ -1,17 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Rocky.DataAccess;
-using Rocky.DataAccess.Repository.Interfaces;
 using Rocky.Utility;
-using Rocky.Utility.BrainTree;
-using Rocky.Utility.EmailPackage;
-using System;
 using Rocky.Infra.IoC;
 
 namespace Rocky
