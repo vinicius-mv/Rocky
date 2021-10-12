@@ -12,6 +12,7 @@ using Rocky.Utility;
 using Rocky.Utility.BrainTree;
 using Rocky.Utility.EmailPackage;
 using System;
+using Rocky.Infra.IoC;
 
 namespace Rocky
 {
@@ -27,43 +28,7 @@ namespace Rocky
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Database
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            // Repositories
-            services.AddScoped<ICategoryRepository, CategoryRepository>();
-            services.AddScoped<IApplicationTypeRepository, ApplicationTypeRepository>();
-            services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<IInquiryHeaderRepository, InquiryHeaderRepository>();
-            services.AddScoped<IInquiryDetailRepository, InquiryDetailRepository>();
-            services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
-            services.AddScoped<IOrderHeaderRepository, OrderHeaderRepository>();
-            services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
-
-            // MailService
-            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
-            services.AddTransient<IEmailService, EmailService>();
-            services.AddTransient<IEmailSender, EmailService>(); // Identity Default Pages(Scaffolded) use this Interface
-
-            // Identity Config
-            services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddDefaultTokenProviders()
-                .AddDefaultUI()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-
-            // Sessions config
-            services.AddHttpContextAccessor();
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(10);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-            });
-
-            // Braintree
-            //services.Configure<BrainTreeSettings>(Configuration.GetSection("BrainTree")); // inject IConfiguration in the BrainTree
-            services.AddSingleton<IBrainTreeGate, BrainTreeGate>();
+            services.AddInfrastructure(Configuration);
 
             services.AddControllersWithViews();
         }
