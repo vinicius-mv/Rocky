@@ -39,9 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Rocky.DataAccess\Rocky.DataAccess.csproj" />
-    <ProjectReference Include="..\Rocky.Models\Rocky.Models.csproj" />
-    <ProjectReference Include="..\Rocky.Utility\Rocky.Utility.csproj" />
+    <ProjectReference Include="..\Rocky.Infra.IoC\Rocky.Infra.IoC.csproj" />
   </ItemGroup>
 
 </Project>

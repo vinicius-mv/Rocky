@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocky", "Rocky\Rocky.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocky.Utility", "Rocky.Utility\Rocky.Utility.csproj", "{C48000EA-88E3-421F-97E7-31AD9A9FE470}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocky.Models", "Rocky.Models\Rocky.Models.csproj", "{1E854824-B335-4F4E-B784-89912E5D1EF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocky.Models", "Rocky.Models\Rocky.Models.csproj", "{1E854824-B335-4F4E-B784-89912E5D1EF8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocky.DataAccess", "Rocky.DataAccess\Rocky.DataAccess.csproj", "{E6FF461D-DE7C-4B5A-BDE2-E12DA7582FBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocky.DataAccess", "Rocky.DataAccess\Rocky.DataAccess.csproj", "{E6FF461D-DE7C-4B5A-BDE2-E12DA7582FBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocky.Infra.IoC", "Rocky.Infra.IoC\Rocky.Infra.IoC.csproj", "{8C81AF6D-4B10-4BCE-84EA-87E400CA9F21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{E6FF461D-DE7C-4B5A-BDE2-E12DA7582FBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E6FF461D-DE7C-4B5A-BDE2-E12DA7582FBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6FF461D-DE7C-4B5A-BDE2-E12DA7582FBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C81AF6D-4B10-4BCE-84EA-87E400CA9F21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C81AF6D-4B10-4BCE-84EA-87E400CA9F21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C81AF6D-4B10-4BCE-84EA-87E400CA9F21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C81AF6D-4B10-4BCE-84EA-87E400CA9F21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
